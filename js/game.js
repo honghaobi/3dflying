@@ -71,7 +71,7 @@ function createScene() {
 
 //Create fog
 
-  scene.fog = new THREE.Fog(colors.lavender, 100, 950);
+  scene.fog = new THREE.Fog(colors.lavender, 300, 1500);
 
   scene.position.x = 0;
   scene.position.y = 0;
@@ -272,7 +272,7 @@ function updateCameraFov(){
     camera.lookAt( house.scene.position );
   }
 
-  camera.fov = normalize(mousePos.y,-1,1,40, 80);
+  camera.fov = normalize(mousePos.y,-1,1,20,80);
 
   camera.updateProjectionMatrix();
 }
