@@ -77,6 +77,7 @@ function createScene() {
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(WIDTH, HEIGHT);
   renderer.shadowMap.enabled = true;
+
   container = document.getElementById('world');
   container.appendChild(renderer.domElement);
 
@@ -220,6 +221,7 @@ function createSky(){
 
 function loop(){
   updateHouse();
+  updateCameraFov();
   ground.mesh.rotation.z += .005;
   sky.mesh.rotation.z += .005;
   renderer.render(scene, camera);
@@ -232,9 +234,21 @@ function updateHouse(){
   var tz = normalize(mousePos.y,-.75,.75,-100, 100);
   var tx = normalize(mousePos.x,-.75,.75,-100, 100);
   if (house) {
+
+    //House movement rotation
+
+    house.scene.position.y += (tz-house.scene.position.y)*0.1;
+    house.scene.rotation.z = (tz-house.scene.position.y)*0.0128;
+    house.scene.rotation.x = (house.scene.position.y-tz)*0.0064;
+
     house.scene.position.z = tz;
     house.scene.position.x = tx;
   }
+}
+
+function updateCameraFov(){
+  camera.fov = normalize(mousePos.x,-1,1,40, 80);
+  camera.updateProjectionMatrix();
 }
 
 function normalize(v,vmin,vmax,tmin, tmax){
