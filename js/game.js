@@ -34,6 +34,7 @@ function init(event){
   createScene();
   createLights();
   createHouse();
+  createBalloons();
   createGround();
   createSky();
   loop();
@@ -205,6 +206,25 @@ function createHouse(){
       // housePartsArray[i].receiveShadow = true;
     }
     scene.add(houseCollada.scene);
+  });
+}
+
+function createBalloons(){
+  var loader = new THREE.ColladaLoader();
+  loader.load('balloons.dae', function (balloonsCollada) {
+    house = balloonsCollada;
+    balloonsCollada.scene.scale.set(0.15,0.15,0.15);
+    balloonsCollada.scene.position.y = 0;
+
+    balloonsCollada.scene.rotation.y = 0;
+    balloonsCollada.scene.rotation.x = -1.6;
+
+    // var ballonsArray = balloonsCollada.scene.children[0].children[2].children;
+    // for (var i = 0; i < ballonsArray.length; i++) {
+    //   ballonsArray[i].castShadow = true;
+    // }
+
+    scene.add(balloonsCollada.scene);
   });
 }
 
