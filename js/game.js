@@ -239,13 +239,16 @@ function updateHouse(){
   var tx = normalize(mousePos.x,-.75,.75,-100, 100);
   var tz = 0;
 
+  var yMovSpeed = 0.1;
+  var xMovSpeed = 0.1;
+  var yRotSpeed = 0.005;
+  var xRotSpeed = 0.005;
+
+
+  //House movement & rotation
   if (house) {
 
-    //Camera Move with the House
-    camera.lookAt( house.scene.position );
-
-
-    //House movement rotation
+    //limit on z axis (left and right)
 
     if (  house.scene.position.z > 300) {
       house.scene.position.z = 300;
@@ -253,21 +256,23 @@ function updateHouse(){
       house.scene.position.z = -300;
     }
 
-    house.scene.position.y += (ty-house.scene.position.y + 120)*0.1;
+    house.scene.position.y += (ty-house.scene.position.y + 120) * yMovSpeed;
+    house.scene.position.z += (tx-house.scene.position.x + 5) * xMovSpeed;
 
-    house.scene.position.z += (tx-house.scene.position.x + 4)*0.1;
-
-    house.scene.rotation.y = -(ty-house.scene.position.y + 120)*0.005;
-
-    house.scene.rotation.z = -(tx-house.scene.position.x)*0.005;
-
+    house.scene.rotation.y = -(ty-house.scene.position.y + 120) * yRotSpeed;
+    house.scene.rotation.z = -(tx-house.scene.position.x) * xRotSpeed;
 
   }
 }
 
 function updateCameraFov(){
 
-  // camera.fov = normalize(mousePos.x,-1,1,40, 80);
+  if (house) {
+    //Camera Point to the House
+    camera.lookAt( house.scene.position );
+  }
+
+  camera.fov = normalize(mousePos.y,-1,1,40, 80);
 
   camera.updateProjectionMatrix();
 }
