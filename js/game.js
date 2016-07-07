@@ -60,6 +60,15 @@ function createScene() {
     farPlane
     );
 
+
+  //Camera starting postion
+
+  camera.position.x = -300;
+  camera.position.z = 0;
+  camera.position.y = 200;
+
+  // camera.lookAt( scene.position );
+
 //Create fog
 
   scene.fog = new THREE.Fog(colors.lavender, 100, 950);
@@ -67,12 +76,6 @@ function createScene() {
   scene.position.x = 0;
   scene.position.y = 0;
   scene.position.z = 0;
-
-  camera.position.x = -100;
-  camera.position.z = 0;
-  camera.position.y = 200;
-
-  // camera.lookAt( scene.position );
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(WIDTH, HEIGHT);
@@ -142,7 +145,6 @@ Sky = function(){
 }
 
 Ground = function(){
-  // var geom = new THREE.CylinderGeometry(600,600,800,40,10);
   var geom = new THREE.SphereGeometry( 1000, 32, 32 );
   geom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
   var mat = new THREE.MeshPhongMaterial({
@@ -192,10 +194,11 @@ function createHouse(){
   loader.load('up-house.dae', function (houseCollada) {
     house = houseCollada;
     houseCollada.scene.scale.set(0.15,0.15,0.15);
-    houseCollada.scene.position.y = 50;
+    houseCollada.scene.position.y = 0;
 
     houseCollada.scene.rotation.y = 0;
-    houseCollada.scene.rotation.x = -1.7;
+    houseCollada.scene.rotation.x = -1.6;
+
     var housePartsArray = houseCollada.scene.children[0].children[2].children;
     for (var i = 0; i < housePartsArray.length; i++) {
       housePartsArray[i].castShadow = true;
@@ -231,23 +234,41 @@ function loop(){
 function updateHouse(){
 
   //Cursor moving the house direction
-  var tz = normalize(mousePos.y,-.75,.75,-100, 100);
+
+  var ty = normalize(mousePos.y,-.75,.75,-100, 100);
   var tx = normalize(mousePos.x,-.75,.75,-100, 100);
+  var tz = 0;
+
   if (house) {
+
+    //Camera Move with the House
+    camera.lookAt( house.scene.position );
+
 
     //House movement rotation
 
-    house.scene.position.y += (tz-house.scene.position.y)*0.1;
-    house.scene.rotation.z = (tz-house.scene.position.y)*0.0128;
-    house.scene.rotation.x = (house.scene.position.y-tz)*0.0064;
+    if (  house.scene.position.z > 300) {
+      house.scene.position.z = 300;
+    } else if (  house.scene.position.z < -300) {
+      house.scene.position.z = -300;
+    }
 
-    house.scene.position.z = tz;
-    house.scene.position.x = tx;
+    house.scene.position.y += (ty-house.scene.position.y + 120)*0.1;
+
+    house.scene.position.z += (tx-house.scene.position.x + 4)*0.1;
+
+    house.scene.rotation.y = -(ty-house.scene.position.y + 120)*0.005;
+
+    house.scene.rotation.z = -(tx-house.scene.position.x)*0.005;
+
+
   }
 }
 
 function updateCameraFov(){
-  camera.fov = normalize(mousePos.x,-1,1,40, 80);
+
+  // camera.fov = normalize(mousePos.x,-1,1,40, 80);
+
   camera.updateProjectionMatrix();
 }
 
@@ -262,12 +283,7 @@ function normalize(v,vmin,vmax,tmin, tmax){
 
 // HANDLE MOUSE EVENTS
 
-var mousePos = { x: 0, y: 0 };
-
 function handleMouseMove(event) {
-
-  //Camera Move with the House
-  camera.lookAt( house.scene.position );
 
   var tx = -1 + (event.clientX / WIDTH)*2;
   var ty = 1 - (event.clientY / HEIGHT)*2;
