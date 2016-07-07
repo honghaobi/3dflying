@@ -7,12 +7,6 @@ var Colors = {
   mint: 0x61eeaa,
   tree: 0x22a164,
 
-  red:0xf25346,
-  white:0xd8d0d1,
-  brown:0x59332e,
-  pink:0xF5986E,
-  brownDark:0x23190f,
-  blue:0x68c3c0
 };
 
 // ThreeJs Varibles
@@ -74,11 +68,11 @@ function createScene() {
   scene.position.y = 0;
   scene.position.z = 0;
 
-  camera.position.x = -50;
-  camera.position.z = 50;
-  camera.position.y = 200;
+  camera.position.x = -100;
+  camera.position.z = 100;
+  camera.position.y = 300;
 
-  camera.lookAt( scene.position );
+  // camera.lookAt( scene.position );
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(WIDTH, HEIGHT);
@@ -128,7 +122,7 @@ function createLights() {
 
 Sky = function(){
   this.mesh = new THREE.Object3D();
-  this.nClouds = 20;
+  this.nClouds = 10;
   this.clouds = [];
   var stepAngle = Math.PI*2 / this.nClouds;
   for(var i=0; i<this.nClouds; i++){
@@ -140,7 +134,7 @@ Sky = function(){
     c.mesh.position.x = Math.cos(a)*h;
     c.mesh.position.z = -400-Math.random()*400;
     c.mesh.rotation.z = a + Math.PI/2;
-    var s = 1+Math.random()*2;
+    var s = 2+Math.random()*2;
     c.mesh.scale.set(s,s,s);
     this.mesh.add(c.mesh);
   }
@@ -163,10 +157,12 @@ Ground = function(){
 Cloud = function(){
   this.mesh = new THREE.Object3D();
   this.mesh.name = "cloud";
-  // var geom = new THREE.CubeGeometry(20,20,20);
   var geom = new THREE.IcosahedronGeometry(50)
   var mat = new THREE.MeshPhongMaterial({
-    color:Colors.navy
+    color:Colors.lavender,
+    transparent:true,
+    opacity:.8,
+    shading:THREE.FlatShading
   });
 
   var nBlocs = 3+Math.floor(Math.random()*3);
@@ -177,7 +173,7 @@ Cloud = function(){
     m.position.z = Math.random()*10;
     m.rotation.z = Math.random()*Math.PI*2;
     m.rotation.y = Math.random()*Math.PI*2;
-    var s = 0.01 + Math.random()*.9;
+    var s = 0.05 + Math.random()*.9;
     m.scale.set(s,s,s);
     m.castShadow = true;
     m.receiveShadow = true;
@@ -225,7 +221,7 @@ function createSky(){
 function loop(){
   updateHouse();
   ground.mesh.rotation.z += .005;
-  sky.mesh.rotation.z += .01;
+  sky.mesh.rotation.z += .005;
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
 }
@@ -255,6 +251,10 @@ function normalize(v,vmin,vmax,tmin, tmax){
 var mousePos = { x: 0, y: 0 };
 
 function handleMouseMove(event) {
+
+  //Camera Move with the House
+  camera.lookAt( house.scene.position );
+
   var tx = -1 + (event.clientX / WIDTH)*2;
   var ty = 1 - (event.clientY / HEIGHT)*2;
   mousePos = {x:tx, y:ty};
