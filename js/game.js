@@ -40,7 +40,6 @@ function init(event){
   createScene();
   createLights();
   createHouse();
-  createPlane();
   createGround();
   createSky();
   loop();
@@ -67,7 +66,8 @@ function createScene() {
     farPlane
     );
 
-  //Create fog
+//Create fog
+
   scene.fog = new THREE.Fog(0xffffff, 100, 950);
 
   scene.position.x = 0;
@@ -125,68 +125,6 @@ function createLights() {
   scene.add(shadowLight);
 }
 
-var AirPlane = function(){
-	this.mesh = new THREE.Object3D();
-  this.mesh.name = "airPlane";
-
-  // Create the cabin
-	// var geomCockpit = new THREE.BoxGeometry(60,50,50,1,1,1);
-  // var matCockpit = new THREE.MeshPhongMaterial({color:Colors.navy, shading:THREE.FlatShading});
-  // var cockpit = new THREE.Mesh(geomCockpit, matCockpit);
-	// cockpit.castShadow = true;
-  // cockpit.receiveShadow = true;
-  // this.mesh.add(cockpit);
-  //
-  // // Create Engine
-  // var geomEngine = new THREE.BoxGeometry(20,50,50,1,1,1);
-  // var matEngine = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
-  // var engine = new THREE.Mesh(geomEngine, matEngine);
-  // engine.position.x = 40;
-  // engine.castShadow = true;
-  // engine.receiveShadow = true;
-	// this.mesh.add(engine);
-
-  // // Create Tailplane
-  //
-  // var geomTailPlane = new THREE.BoxGeometry(15,20,5,1,1,1);
-  // var matTailPlane = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
-  // var tailPlane = new THREE.Mesh(geomTailPlane, matTailPlane);
-  // tailPlane.position.set(-35,25,0);
-  // tailPlane.castShadow = true;
-  // tailPlane.receiveShadow = true;
-	// this.mesh.add(tailPlane);
-  //
-  // // Create Wing
-  //
-  // var geomSideWing = new THREE.BoxGeometry(40,8,150,1,1,1);
-  // var matSideWing = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
-  // var sideWing = new THREE.Mesh(geomSideWing, matSideWing);
-  // sideWing.position.set(0,0,0);
-  // sideWing.castShadow = true;
-  // sideWing.receiveShadow = true;
-	// this.mesh.add(sideWing);
-  //
-  // // Propeller
-  //
-  // var geomPropeller = new THREE.BoxGeometry(20,10,10,1,1,1);
-  // var matPropeller = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
-  // this.propeller = new THREE.Mesh(geomPropeller, matPropeller);
-  // this.propeller.castShadow = true;
-  // this.propeller.receiveShadow = true;
-  //
-  // // Blades
-  //
-  // var geomBlade = new THREE.BoxGeometry(1,100,20,1,1,1);
-  // var matBlade = new THREE.MeshPhongMaterial({color:Colors.brownDark, shading:THREE.FlatShading});
-  //
-  // var blade = new THREE.Mesh(geomBlade, matBlade);
-  // blade.position.set(8,0,0);
-  // blade.castShadow = true;
-  // blade.receiveShadow = true;
-	// this.propeller.add(blade);
-  // this.propeller.position.set(50,0,0);
-  // this.mesh.add(this.propeller);
-};
 
 Sky = function(){
   this.mesh = new THREE.Object3D();
@@ -228,7 +166,7 @@ Cloud = function(){
   // var geom = new THREE.CubeGeometry(20,20,20);
   var geom = new THREE.IcosahedronGeometry(50)
   var mat = new THREE.MeshPhongMaterial({
-    color:Colors.white
+    color:Colors.navy
   });
 
   var nBlocs = 3+Math.floor(Math.random()*3);
@@ -250,33 +188,24 @@ Cloud = function(){
 
 // 3D Models
 var ground;
-var airplane;
 var house;
 
 function createHouse(){
   var loader = new THREE.ColladaLoader();
-  loader.load('up-house.dae', function (house) {
-      house.scene.scale.set(0.15,0.15,0.15);
-      house.scene.position.y = 50;
+  loader.load('up-house.dae', function (houseCollada) {
+    house = houseCollada;
+    houseCollada.scene.scale.set(0.15,0.15,0.15);
+    houseCollada.scene.position.y = 50;
 
-      house.scene.rotation.y = 0;
-      house.scene.rotation.x = -1.7;
-      var housePartsArray = house.scene.children[0].children[2].children;
-      for (var i = 0; i < housePartsArray.length; i++) {
-        housePartsArray[i].castShadow = true;
-        // housePartsArray[i].receiveShadow = true;
-      }
-
-      scene.add(house.scene);
+    houseCollada.scene.rotation.y = 0;
+    houseCollada.scene.rotation.x = -1.7;
+    var housePartsArray = houseCollada.scene.children[0].children[2].children;
+    for (var i = 0; i < housePartsArray.length; i++) {
+      housePartsArray[i].castShadow = true;
+      // housePartsArray[i].receiveShadow = true;
     }
-  );
-}
-
-function createPlane(){
-  airplane = new AirPlane();
-  airplane.mesh.scale.set(.25,.25,.25);
-  airplane.mesh.position.y = 100;
-  scene.add(airplane.mesh);
+    scene.add(houseCollada.scene);
+  });
 }
 
 function createGround(){
@@ -294,19 +223,22 @@ function createSky(){
 }
 
 function loop(){
-  updatePlane();
+  updateHouse();
   ground.mesh.rotation.z += .005;
   sky.mesh.rotation.z += .01;
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
 }
 
-function updatePlane(){
-  // var targetY = normalize(mousePos.x,-.75,.75,25, 175);
-  // var targetX = normalize(mousePos.x,-.75,.75,-100, 100);
-  // airplane.mesh.position.y = targetY;
-  // airplane.mesh.position.x = targetX;
-  // airplane.propeller.rotation.x += 0.3;
+function updateHouse(){
+
+  //Cursor moving the house direction
+  var tz = normalize(mousePos.y,-.75,.75,-100, 100);
+  var tx = normalize(mousePos.x,-.75,.75,-100, 100);
+  if (house) {
+    house.scene.position.z = tz;
+    house.scene.position.x = tx;
+  }
 }
 
 function normalize(v,vmin,vmax,tmin, tmax){
@@ -317,7 +249,6 @@ function normalize(v,vmin,vmax,tmin, tmax){
   var tv = tmin + (pc*dt);
   return tv;
 }
-
 
 // HANDLE MOUSE EVENTS
 
