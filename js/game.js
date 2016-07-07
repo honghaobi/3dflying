@@ -1,5 +1,5 @@
 // Preset colors
-var Colors = {
+var colors = {
   peach: 0xee7261,
   lavender: 0xeadfff,
   navy: 0x3a6dbb,
@@ -62,15 +62,15 @@ function createScene() {
 
 //Create fog
 
-  scene.fog = new THREE.Fog(0xffffff, 100, 950);
+  scene.fog = new THREE.Fog(colors.lavender, 100, 950);
 
   scene.position.x = 0;
   scene.position.y = 0;
   scene.position.z = 0;
 
   camera.position.x = -100;
-  camera.position.z = 100;
-  camera.position.y = 300;
+  camera.position.z = 0;
+  camera.position.y = 200;
 
   // camera.lookAt( scene.position );
 
@@ -142,10 +142,10 @@ Sky = function(){
 
 Ground = function(){
   // var geom = new THREE.CylinderGeometry(600,600,800,40,10);
-  var geom = new THREE.SphereGeometry( 600, 32, 32 );
+  var geom = new THREE.SphereGeometry( 1000, 32, 32 );
   geom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
   var mat = new THREE.MeshPhongMaterial({
-    color:Colors.avocado,
+    color:colors.avocado,
     transparent:true,
     opacity:1,
     shading:THREE.FlatShading,
@@ -159,7 +159,7 @@ Cloud = function(){
   this.mesh.name = "cloud";
   var geom = new THREE.IcosahedronGeometry(50)
   var mat = new THREE.MeshPhongMaterial({
-    color:Colors.lavender,
+    color:colors.lavender,
     transparent:true,
     opacity:.8,
     shading:THREE.FlatShading
@@ -206,7 +206,7 @@ function createHouse(){
 
 function createGround(){
   ground = new Ground();
-  ground.mesh.position.y = -600;
+  ground.mesh.position.y = -1000;
   scene.add(ground.mesh);
 }
 
