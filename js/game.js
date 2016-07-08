@@ -47,6 +47,7 @@ function createScene() {
   HEIGHT = window.innerHeight;
   WIDTH = window.innerWidth;
 
+  //Initial creation of the Camera View
   scene = new THREE.Scene();
   aspectRatio = WIDTH / HEIGHT;
   fieldOfView = 80;
@@ -107,6 +108,7 @@ var ambientLight,
 function createLights() {
 
   hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .8)
+  ambientLight = new THREE.AmbientLight(colors.peach, .2);
   shadowLight = new THREE.DirectionalLight(0xffffff, .6);
   shadowLight.position.set(-250, 350, 350);
   shadowLight.castShadow = true;
@@ -119,7 +121,12 @@ function createLights() {
   shadowLight.shadow.mapSize.width = 2048;
   shadowLight.shadow.mapSize.height = 2048;
 
+  //Testing light source.
+  // var lightSource = new THREE.CameraHelper(shadowLight.shadow.camera);
+  // scene.add(lightSource);
+
   scene.add(hemisphereLight);
+  scene.add(ambientLight);
   scene.add(shadowLight);
 }
 
@@ -287,13 +294,34 @@ function normalize(v,vmin,vmax,tmin, tmax){
   return tv;
 }
 
-// HANDLE MOUSE EVENTS
+// Handle Mouse Events & Touch Events
 
 function handleMouseMove(event) {
-
   var tx = -1 + (event.clientX / WIDTH)*2;
   var ty = 1 - (event.clientY / HEIGHT)*2;
   mousePos = {x:tx, y:ty};
+}
+
+function handleTouchMove(event) {
+    event.preventDefault();
+    var tx = -1 + (event.touches[0].pageX / WIDTH)*2;
+    var ty = 1 - (event.touches[0].pageY / HEIGHT)*2;
+    mousePos = {x:tx, y:ty};
+}
+
+function handleMouseUp(event){
+  if (game.status == "waitingReplay"){
+    // resetGame();
+    // hideReplay();
+  }
+}
+
+
+function handleTouchEnd(event){
+  if (game.status == "waitingReplay"){
+    // resetGame();
+    // hideReplay();
+  }
 }
 
 window.addEventListener('load', init, false);
