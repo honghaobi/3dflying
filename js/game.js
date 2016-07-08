@@ -190,7 +190,7 @@ var house;
 
 function createHouse(){
   var loader = new THREE.ColladaLoader();
-  loader.load('up-house-with-balloons.dae', function (houseCollada) {
+  loader.load('models/up-house-with-balloons.dae', function (houseCollada) {
     house = houseCollada;
     houseCollada.scene.scale.set(0.15,0.15,0.15);
     houseCollada.scene.position.y = 0;
