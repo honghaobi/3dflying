@@ -34,7 +34,6 @@ function init(event){
   createScene();
   createLights();
   createHouse();
-  createBalloons();
   createGround();
   createSky();
   loop();
@@ -192,7 +191,7 @@ var house;
 
 function createHouse(){
   var loader = new THREE.ColladaLoader();
-  loader.load('up-house.dae', function (houseCollada) {
+  loader.load('up-house-with-balloons.dae', function (houseCollada) {
     house = houseCollada;
     houseCollada.scene.scale.set(0.15,0.15,0.15);
     houseCollada.scene.position.y = 0;
@@ -200,33 +199,20 @@ function createHouse(){
     houseCollada.scene.rotation.y = 0;
     houseCollada.scene.rotation.x = -1.6;
 
+
     var housePartsArray = houseCollada.scene.children[0].children[2].children;
+    var ballonsArray = houseCollada.scene.children[0].children[1].children;
     for (var i = 0; i < housePartsArray.length; i++) {
       housePartsArray[i].castShadow = true;
-      // housePartsArray[i].receiveShadow = true;
+    }
+
+    for (var i = 0; i < ballonsArray.length; i++) {
+      ballonsArray[i].castShadow = true;
     }
     scene.add(houseCollada.scene);
   });
 }
 
-function createBalloons(){
-  var loader = new THREE.ColladaLoader();
-  loader.load('balloons.dae', function (balloonsCollada) {
-    house = balloonsCollada;
-    balloonsCollada.scene.scale.set(0.15,0.15,0.15);
-    balloonsCollada.scene.position.y = 0;
-
-    balloonsCollada.scene.rotation.y = 0;
-    balloonsCollada.scene.rotation.x = -1.6;
-
-    // var ballonsArray = balloonsCollada.scene.children[0].children[2].children;
-    // for (var i = 0; i < ballonsArray.length; i++) {
-    //   ballonsArray[i].castShadow = true;
-    // }
-
-    scene.add(balloonsCollada.scene);
-  });
-}
 
 function createGround(){
   ground = new Ground();
