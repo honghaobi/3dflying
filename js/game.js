@@ -123,27 +123,6 @@ function createLights() {
   scene.add(shadowLight);
 }
 
-
-Sky = function(){
-  this.mesh = new THREE.Object3D();
-  this.nClouds = 10;
-  this.clouds = [];
-  var stepAngle = Math.PI*2 / this.nClouds;
-  for(var i=0; i<this.nClouds; i++){
-    var c = new Cloud();
-    this.clouds.push(c);
-    var a = stepAngle*i;
-    var h = 750 + Math.random()*200;
-    c.mesh.position.y = Math.sin(a)*h;
-    c.mesh.position.x = Math.cos(a)*h;
-    c.mesh.position.z = -400-Math.random()*400;
-    c.mesh.rotation.z = a + Math.PI/2;
-    var s = 2+Math.random()*2;
-    c.mesh.scale.set(s,s,s);
-    this.mesh.add(c.mesh);
-  }
-}
-
 Ground = function(){
   var geom = new THREE.SphereGeometry( 1000, 32, 32 );
   geom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
@@ -155,6 +134,36 @@ Ground = function(){
   });
   this.mesh = new THREE.Mesh(geom, mat);
   this.mesh.receiveShadow = true;
+}
+
+Sky = function(){
+  this.mesh = new THREE.Object3D();
+  this.nClouds = 50;
+  this.clouds = [];
+  var stepAngle = Math.PI*2 / this.nClouds;
+  for(var i=0; i<this.nClouds; i++){
+    var c = new Cloud();
+    this.clouds.push(c);
+    var a = stepAngle*i;
+    var h = 1000 + Math.random()*200;
+    c.mesh.position.y = Math.sin(a)*h;
+
+    console.log('y', c.mesh.position.y);
+
+
+    c.mesh.position.x = Math.cos(a)*h;
+
+    console.log('x', c.mesh.position.x);
+
+    c.mesh.position.z = Math.random()* (3000 - (-3000)) + (-3000);
+
+    console.log('z', c.mesh.position.z);
+
+    c.mesh.rotation.z = a + Math.PI/2;
+    var s = 1 + Math.random() * 3;
+    c.mesh.scale.set(s,s,s);
+    this.mesh.add(c.mesh);
+  }
 }
 
 Cloud = function(){
@@ -244,23 +253,25 @@ function updateHouse(){
   var yRotSpeed = 0.005;
   var xRotSpeed = 0.005;
 
-
   //House movement & rotation
   if (house) {
 
+    var housePos = house.scene.position;
+    var houseRot = house.scene.rotation;
+
     //limit on z axis (left and right)
 
-    if (  house.scene.position.z > 300) {
-      house.scene.position.z = 300;
-    } else if (  house.scene.position.z < -300) {
-      house.scene.position.z = -300;
+    if (housePos.z > 300) {
+      housePos.z = 300;
+    } else if (housePos.z < -300) {
+      housePos.z = -300;
     }
 
-    house.scene.position.y += (ty-house.scene.position.y + 120) * yMovSpeed;
-    house.scene.position.z += (tx-house.scene.position.x + 5) * xMovSpeed;
+    housePos.y += (ty-housePos.y + 120) * yMovSpeed;
+    housePos.z += (tx-housePos.x + 5) * xMovSpeed;
 
-    house.scene.rotation.y = -(ty-house.scene.position.y + 120) * yRotSpeed;
-    house.scene.rotation.z = -(tx-house.scene.position.x) * xRotSpeed;
+    houseRot.y = -(ty-housePos.y + 120) * yRotSpeed;
+    houseRot.z = -(tx-housePos.x) * xRotSpeed;
 
   }
 }
