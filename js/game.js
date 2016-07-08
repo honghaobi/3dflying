@@ -108,14 +108,14 @@ function createLights() {
 
   hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .8)
   shadowLight = new THREE.DirectionalLight(0xffffff, .6);
-  shadowLight.position.set(250, 350, 350);
+  shadowLight.position.set(-250, 350, 350);
   shadowLight.castShadow = true;
   shadowLight.shadow.camera.left = -400;
   shadowLight.shadow.camera.right = 400;
   shadowLight.shadow.camera.top = 400;
   shadowLight.shadow.camera.bottom = -400;
   shadowLight.shadow.camera.near = 1;
-  shadowLight.shadow.camera.far = 1000;
+  shadowLight.shadow.camera.far = 2000;
   shadowLight.shadow.mapSize.width = 2048;
   shadowLight.shadow.mapSize.height = 2048;
 
@@ -145,22 +145,12 @@ Sky = function(){
     var c = new Cloud();
     this.clouds.push(c);
     var a = stepAngle*i;
-    var h = 1000 + Math.random()*200;
+    var h = 1500 + Math.random()*200;
     c.mesh.position.y = Math.sin(a)*h;
-
-    console.log('y', c.mesh.position.y);
-
-
     c.mesh.position.x = Math.cos(a)*h;
-
-    console.log('x', c.mesh.position.x);
-
     c.mesh.position.z = Math.random()* (3000 - (-3000)) + (-3000);
-
-    console.log('z', c.mesh.position.z);
-
     c.mesh.rotation.z = a + Math.PI/2;
-    var s = 1 + Math.random() * 3;
+    var s = 1 + Math.random() * 5;
     c.mesh.scale.set(s,s,s);
     this.mesh.add(c.mesh);
   }
@@ -283,7 +273,7 @@ function updateCameraFov(){
     camera.lookAt( house.scene.position );
   }
 
-  camera.fov = normalize(mousePos.y,-1,1,20,80);
+  camera.fov = normalize(mousePos.y,-1,1,30,80);
 
   camera.updateProjectionMatrix();
 }
