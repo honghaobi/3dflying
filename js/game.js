@@ -199,15 +199,9 @@ function createHouse(){
     houseCollada.scene.rotation.y = 0;
     houseCollada.scene.rotation.x = -1.6;
 
-
-    var housePartsArray = houseCollada.scene.children[0].children[2].children;
-    var ballonsArray = houseCollada.scene.children[0].children[1].children;
+    var housePartsArray = houseCollada.scene.children[0].children[1].children;
     for (var i = 0; i < housePartsArray.length; i++) {
       housePartsArray[i].castShadow = true;
-    }
-
-    for (var i = 0; i < ballonsArray.length; i++) {
-      ballonsArray[i].castShadow = true;
     }
     scene.add(houseCollada.scene);
   });
