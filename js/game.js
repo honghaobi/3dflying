@@ -1,12 +1,14 @@
 // Preset colors
 var colors = {
+  white: 0xffffff,
+  gray: 0x909090,
+  black: 0x000000,
   peach: 0xee7261,
   lavender: 0xeadfff,
   navy: 0x3a6dbb,
   avocado: 0xd4f17a,
   mint: 0x61eeaa,
   tree: 0x22a164,
-
 };
 
 // ThreeJs Varibles
@@ -76,9 +78,9 @@ var game = {
 
         landRadius: 600,
 
-        cameraFarPos:500,
-        cameraNearPos:150,
-        cameraSensivity:0.002,
+        cameraFarPos: 500,
+        cameraNearPos: 150,
+        cameraSensivity: 0.002,
 
         // coinDistanceTolerance:15,
         // coinValue:3,
@@ -87,11 +89,11 @@ var game = {
         // distanceForCoinsSpawn: 100,
 
         //birds collosion contact tolorance
-        birdDistanceTolerance: 65,
-        birdValue:10,
-        birdsSpeed:.6,
-        birdLastSpawn:0,
-        distanceForEnnemiesSpawn:50,
+        birdDistanceTolerance: 60,
+        birdValue: 10,
+        birdsSpeed: .6,
+        birdLastSpawn: 0,
+        distanceForBirdsSpawn: 50,
 
         status : "playing",
 
@@ -179,9 +181,9 @@ var ambientLight,
 
 function createLights() {
 
-  hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .8)
-  ambientLight = new THREE.AmbientLight(colors.peach, .2);
-  shadowLight = new THREE.DirectionalLight(0xffffff, .6);
+  hemisphereLight = new THREE.HemisphereLight(colors.lavender, colors.black, .6)
+  ambientLight = new THREE.AmbientLight(colors.gray);
+  shadowLight = new THREE.DirectionalLight(colors.gray, 0.5);
   shadowLight.position.set(-250, 350, 350);
   shadowLight.castShadow = true;
   shadowLight.shadow.camera.left = -400;
@@ -324,6 +326,8 @@ BirdsHolder.prototype.spawnBirds = function(){
   }
 }
 
+
+
 BirdsHolder.prototype.rotateBirds = function(){
   for (var i=0; i<this.birdsInUse.length; i++){
     var bird = this.birdsInUse[i];
@@ -334,18 +338,34 @@ BirdsHolder.prototype.rotateBirds = function(){
     bird.mesh.position.y = -game.landRadius + Math.sin(bird.angle)*bird.distance;
     bird.mesh.position.x = Math.cos(bird.angle)*bird.distance;
 
-    var diffPos = house.scene.position.clone().sub(bird.mesh.position.clone());
-    console.log(diffPos.length());
-    var d = diffPos.length();
-    if (d<game.birdDistanceTolerance){
-      console.log('d', d);
+
+    //Setting the ballons position for collision detection
+    var ballonsPos = new THREE.Vector3();
+
+    ballonsPos.x = house.scene.position.x;
+    ballonsPos.y = house.scene.position.y + 100;
+    ballonsPos.z = house.scene.position.z;
+
+    var diffBallonsPos = ballonsPos.clone().sub(bird.mesh.position.clone());
+    var diffHousePos = house.scene.position.clone().sub(bird.mesh.position.clone());
+
+
+    var dh = diffHousePos.length();
+    var db = diffBallonsPos.length();
+
+    if (dh < game.birdDistanceTolerance || db < game.birdDistanceTolerance){
 
       // particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, Colors.red, 3);
 
+      //Birds disapear when collide
       birdsPool.unshift(this.birdsInUse.splice(i,1)[0]);
       this.mesh.remove(bird.mesh);
-      game.houseCollisionSpeedX = 100 * diffPos.x / d;
-      game.houseCollisionSpeedY = 100 * diffPos.y / d;
+
+      //House movement after collision.
+      game.houseCollisionSpeedX = 100 * diffHousePos.x / dh;
+      game.houseCollisionSpeedY = 100 * diffHousePos.y / dh;
+
+      //Light intensity flashed when collide with birds.
       ambientLight.intensity = 2;
 
       // removeEnergy();
@@ -381,7 +401,6 @@ function createHouse(){
     scene.add(houseCollada.scene);
   });
 }
-
 
 function createGround(){
   ground = new Ground();
@@ -424,6 +443,11 @@ function loop(){
   deltaTime = newTime-oldTime;
   oldTime = newTime;
 
+
+  //light intensity changes back when hit birds.
+  ambientLight.intensity += (.5 - ambientLight.intensity)*deltaTime*0.005;
+
+
   if (game.status=="playing"){
 
     if (Math.floor(game.distance)%game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate){
@@ -432,7 +456,7 @@ function loop(){
     }
 
 
-    if (Math.floor(game.distance)%game.distanceForEnnemiesSpawn == 0 && Math.floor(game.distance) > game.birdLastSpawn){
+    if (Math.floor(game.distance)%game.distanceForBirdsSpawn == 0 && Math.floor(game.distance) > game.birdLastSpawn){
       game.birdLastSpawn = Math.floor(game.distance);
       birdsHolder.spawnBirds();
     }
