@@ -268,9 +268,12 @@ Clouds = function(){
 
 Bird = function(){
   var self = this;
-  var flamingoLoader = new THREE.JSONLoader();
+  var birdsLoader = new THREE.JSONLoader();
 
-  flamingoLoader.load( "models/flamingo.js", function( geometry ) {
+  var birdsArray = ["models/flamingo.js", "models/parrot.js", "models/stork.js"];
+  birdsRandom = birdsArray[Math.floor(Math.random()*3)];
+
+  birdsLoader.load( birdsRandom, function( geometry ) {
     var material = new THREE.MeshPhongMaterial({
       color: 0xffffff,
       specular: 0xffffff,
@@ -308,7 +311,6 @@ BirdsHolder.prototype.spawnBirds = function(){
     for (var i=0; i<nBirds; i++){
       var bird;
       if (birdsPool.length) {
-        console.log('birdspool poping');
         bird = birdsPool.pop();
       } else {
         bird = new Bird();
