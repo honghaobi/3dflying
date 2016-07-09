@@ -291,7 +291,7 @@ Bird = function(){
     self.angle = 0;
     self.dist = 0;
 		// scene.add( this.mesh );
-		var mixer = new THREE.AnimationMixer( this.mesh );
+		var mixer = new THREE.AnimationMixer( self.mesh );
 		mixer.clipAction( geometry.animations[ 0 ] ).setDuration( 1 ).play();
 		mixers.push( mixer );
   });
