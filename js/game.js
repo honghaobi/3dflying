@@ -28,6 +28,7 @@ var HEIGHT,
     WIDTH,
     mousePos = { x: 0, y: 0 };
 
+var stats = new Stats();
 
 //For animation frames
 
@@ -86,14 +87,14 @@ var game = {
         balloonValue: 3,
         balloonsSpeed: .5,
         balloonLastSpawn: 0,
-        distanceForBalloonsSpawn: 30,
+        distanceForBalloonsSpawn: 40,
 
         //birds collosion contact tolorance
         birdDistanceTolerance: 60,
         birdValue: 10,
         birdsSpeed: .6,
         birdLastSpawn: 0,
-        distanceForBirdsSpawn: 50,
+        distanceForBirdsSpawn: 40,
 
         status : "playing",
 
@@ -159,6 +160,10 @@ function createScene() {
 
   container = document.getElementById('world');
   container.appendChild(renderer.domElement);
+
+  //stats tracker
+
+  container.appendChild(stats.dom);
 
   window.addEventListener('resize', handleWindowResize, false);
 
@@ -558,6 +563,9 @@ function renderAnimatedModels() {
 
 
 function loop(){
+
+  //FPS update;
+  stats.update();
 
   //Game Logic
 
