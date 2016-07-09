@@ -57,23 +57,23 @@ var game = {speed:0,
         levelLastUpdate:0,
         distanceForLevelUpdate:1000,
 
-        planeDefaultHeight:100,
-        planeAmpHeight:80,
-        planeAmpWidth:75,
-        planeMoveSensivity:0.005,
-        planeRotXSensivity:0.0008,
-        planeRotZSensivity:0.0004,
-        planeFallSpeed:.001,
-        planeMinSpeed:1.2,
-        planeMaxSpeed:1.6,
-        planeSpeed:0,
-        planeCollisionDisplacementX:0,
-        planeCollisionSpeedX:0,
+        houseDefaultHeight:100,
+        houseAmpHeight:80,
+        houseAmpWidth:75,
+        houseMoveSensivity:0.005,
+        houseRotXSensivity:0.0008,
+        houseRotZSensivity:0.0004,
+        houseFallSpeed:.001,
+        houseMinSpeed:1.2,
+        houseMaxSpeed:1.6,
+        houseSpeed:0,
+        houseCollisionDisplacementX:0,
+        houseCollisionSpeedX:0,
 
-        planeCollisionDisplacementY:0,
-        planeCollisionSpeedY:0,
+        houseCollisionDisplacementY:0,
+        houseCollisionSpeedY:0,
 
-        seaRadius:600,
+        landRadius:600,
         seaLength:800,
         //seaRotationSpeed:0.006,
         wavesMinAmp : 5,
@@ -279,35 +279,19 @@ Bird = function(){
       vertexColors: THREE.FaceColors,
       shading: THREE.FlatShading
     });
-    console.log('this', self);
 		self.mesh = new THREE.Mesh( geometry, material );
-		// var s = 0.35;
     var s = 0.35;
 		self.mesh.scale.set( s, s, s );
-		self.mesh.position.y = 200;
-		self.mesh.rotation.y = -1;
+		self.mesh.rotation.y = -1.6;
 		self.mesh.castShadow = true;
 		self.mesh.receiveShadow = true;
     self.angle = 0;
     self.dist = 0;
-		// scene.add( this.mesh );
 		var mixer = new THREE.AnimationMixer( self.mesh );
-		mixer.clipAction( geometry.animations[ 0 ] ).setDuration( 1 ).play();
+		mixer.clipAction( geometry.animations[0] ).setDuration( 1 ).play();
 		mixers.push( mixer );
+
   });
-
-  // var geom = new THREE.TetrahedronGeometry(30,2);
-  // var mat = new THREE.MeshPhongMaterial({
-  //   color:colors.navy,
-  //   shininess:0,
-  //   specular:0xffffff,
-  //   shading:THREE.FlatShading
-  // });
-  // this.mesh = new THREE.Mesh(geom,mat);
-  // this.mesh.castShadow = true;
-  // this.angle = 0;
-  // this.dist = 0;
-
 }
 
 BirdsHolder = function (){
@@ -331,12 +315,11 @@ BirdsHolder.prototype.spawnBirds = function(){
       }
 
     bird.angle = - (i*0.1);
-    bird.distance = game.seaRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight-20);
-    console.log('bird distance', bird.distance);
-    bird.mesh.position.y = -game.seaRadius + Math.sin(bird.angle)*bird.distance;
-    console.log('bird mesh pos y', bird.mesh.position.y);
+    bird.distance = game.landRadius + game.houseDefaultHeight + (-1 + Math.random() * 2) * (game.houseAmpHeight-20);
+    bird.mesh.position.y = -game.landRadius + Math.sin(bird.angle)*bird.distance;
     bird.mesh.position.x = Math.cos(bird.angle)*bird.distance;
-    console.log('bird mesh pos x', bird.mesh.position.x);
+    bird.mesh.position.z = Math.random()* (300 - (-300)) + (-300);
+
 
     this.mesh.add(bird.mesh);
     this.birdsInUse.push(bird);
@@ -350,24 +333,23 @@ BirdsHolder.prototype.rotateBirds = function(){
 
     if (bird.angle > Math.PI*2) bird.angle -= Math.PI*2;
 
-    bird.mesh.position.y = -game.seaRadius + Math.sin(bird.angle)*bird.distance;
+    bird.mesh.position.y = -game.landRadius + Math.sin(bird.angle)*bird.distance;
     bird.mesh.position.x = Math.cos(bird.angle)*bird.distance;
-    // bird.mesh.rotation.z += Math.random()*.1;
-    // bird.mesh.rotation.y += Math.random()*.1;
 
-    //var globalEnnemyPosition =  bird.mesh.localToWorld(new THREE.Vector3());
     var diffPos = house.scene.position.clone().sub(bird.mesh.position.clone());
     var d = diffPos.length();
     if (d<game.ennemyDistanceTolerance){
+
+
       // particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, Colors.red, 3);
 
       birdsPool.unshift(this.birdsInUse.splice(i,1)[0]);
       this.mesh.remove(bird.mesh);
-      game.planeCollisionSpeedX = 100 * diffPos.x / d;
-      game.planeCollisionSpeedY = 100 * diffPos.y / d;
+      game.houseCollisionSpeedX = 100 * diffPos.x / d;
+      game.houseCollisionSpeedY = 100 * diffPos.y / d;
       ambientLight.intensity = 2;
 
-      removeEnergy();
+      // removeEnergy();
       i--;
     }else if (bird.angle > Math.PI){
       birdsPool.unshift(this.birdsInUse.splice(i,1)[0]);
@@ -469,7 +451,7 @@ function loop(){
   updateHouse();
   updateDistance();
   game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
-  game.speed = game.baseSpeed * game.planeSpeed;
+  game.speed = game.baseSpeed * game.houseSpeed;
 
 } else if(game.status=="gameover") {
 
@@ -531,7 +513,7 @@ function updateHouse(){
 
   }
 
-  game.planeSpeed = normalize(mousePos.x,-.5,.5,game.planeMinSpeed, game.planeMaxSpeed);
+  game.houseSpeed = normalize(mousePos.x,-.5,.5,game.houseMinSpeed, game.houseMaxSpeed);
 
 
 
