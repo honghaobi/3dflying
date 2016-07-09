@@ -266,11 +266,17 @@ Clouds = function(){
 }
 
 Balloon = function(){
-  var sphereGeometry = new THREE.SphereGeometry(50, 32, 32);
-  var material = new THREE.MeshBasicMaterial({
-    color: colors.navy,
+
+  var ballonColorsArray = [0xFF0077, 0x00FF00, 0xFFFF00,0xFF3300, 0xFF0009, 0x6600FF, 0x0000FF, 0x00FFFF];
+  ballonsColorsRandom = ballonColorsArray[Math.floor(Math.random()*8)];
+
+  var sphereGeometry = new THREE.SphereGeometry(8, 64, 64);
+  var material = new THREE.MeshPhongMaterial({
+    color: ballonsColorsRandom,
     shininess: 20,
     specular: colors.white,
+    morphTargets: true,
+		morphNormals: true,
     shading: THREE.FlatShading
   });
 
