@@ -267,46 +267,46 @@ Clouds = function(){
 }
 
 Bird = function(){
-  // var self = this;
-  // var flamingoLoader = new THREE.JSONLoader();
-  //
-  // flamingoLoader.load( "models/flamingo.js", function( geometry ) {
-  //   var material = new THREE.MeshPhongMaterial({
-  //     color: 0xffffff,
-  //     specular: 0xffffff,
-  //     shininess: 20,
-  //     morphTargets: true,
-  //     vertexColors: THREE.FaceColors,
-  //     shading: THREE.FlatShading
-  //   });
-  //   console.log('this', self);
-	// 	self.mesh = new THREE.Mesh( geometry, material );
-	// 	// var s = 0.35;
-  //   var s = 35;
-	// 	self.mesh.scale.set( s, s, s );
-	// 	self.mesh.position.y = 200;
-	// 	self.mesh.rotation.y = -1;
-	// 	self.mesh.castShadow = true;
-	// 	self.mesh.receiveShadow = true;
-  //   self.angle = 0;
-  //   self.dist = 0;
-	// 	// scene.add( this.mesh );
-	// 	var mixer = new THREE.AnimationMixer( this.mesh );
-	// 	mixer.clipAction( geometry.animations[ 0 ] ).setDuration( 1 ).play();
-	// 	mixers.push( mixer );
-  // });
+  var self = this;
+  var flamingoLoader = new THREE.JSONLoader();
 
-  var geom = new THREE.TetrahedronGeometry(30,2);
-  var mat = new THREE.MeshPhongMaterial({
-    color:colors.navy,
-    shininess:0,
-    specular:0xffffff,
-    shading:THREE.FlatShading
+  flamingoLoader.load( "models/flamingo.js", function( geometry ) {
+    var material = new THREE.MeshPhongMaterial({
+      color: 0xffffff,
+      specular: 0xffffff,
+      shininess: 20,
+      morphTargets: true,
+      vertexColors: THREE.FaceColors,
+      shading: THREE.FlatShading
+    });
+    console.log('this', self);
+		self.mesh = new THREE.Mesh( geometry, material );
+		// var s = 0.35;
+    var s = 0.35;
+		self.mesh.scale.set( s, s, s );
+		self.mesh.position.y = 200;
+		self.mesh.rotation.y = -1;
+		self.mesh.castShadow = true;
+		self.mesh.receiveShadow = true;
+    self.angle = 0;
+    self.dist = 0;
+		// scene.add( this.mesh );
+		var mixer = new THREE.AnimationMixer( this.mesh );
+		mixer.clipAction( geometry.animations[ 0 ] ).setDuration( 1 ).play();
+		mixers.push( mixer );
   });
-  this.mesh = new THREE.Mesh(geom,mat);
-  this.mesh.castShadow = true;
-  this.angle = 0;
-  this.dist = 0;
+
+  // var geom = new THREE.TetrahedronGeometry(30,2);
+  // var mat = new THREE.MeshPhongMaterial({
+  //   color:colors.navy,
+  //   shininess:0,
+  //   specular:0xffffff,
+  //   shading:THREE.FlatShading
+  // });
+  // this.mesh = new THREE.Mesh(geom,mat);
+  // this.mesh.castShadow = true;
+  // this.angle = 0;
+  // this.dist = 0;
 
 }
 
@@ -352,14 +352,14 @@ BirdsHolder.prototype.rotateBirds = function(){
 
     bird.mesh.position.y = -game.seaRadius + Math.sin(bird.angle)*bird.distance;
     bird.mesh.position.x = Math.cos(bird.angle)*bird.distance;
-    bird.mesh.rotation.z += Math.random()*.1;
-    bird.mesh.rotation.y += Math.random()*.1;
+    // bird.mesh.rotation.z += Math.random()*.1;
+    // bird.mesh.rotation.y += Math.random()*.1;
 
     //var globalEnnemyPosition =  bird.mesh.localToWorld(new THREE.Vector3());
     var diffPos = house.scene.position.clone().sub(bird.mesh.position.clone());
     var d = diffPos.length();
     if (d<game.ennemyDistanceTolerance){
-      particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, Colors.red, 3);
+      // particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, Colors.red, 3);
 
       birdsPool.unshift(this.birdsInUse.splice(i,1)[0]);
       this.mesh.remove(bird.mesh);
