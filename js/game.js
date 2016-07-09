@@ -36,6 +36,7 @@ function init(event){
   createHouse();
   createGround();
   createSky();
+  createBirds();
   loop();
 }
 
@@ -149,24 +150,24 @@ Sky = function(){
   this.clouds = [];
   var stepAngle = Math.PI*2 / this.nClouds;
   for(var i=0; i<this.nClouds; i++){
-    var c = new Cloud();
-    this.clouds.push(c);
+    var clouds = new Clouds();
+    this.clouds.push(clouds);
     var a = stepAngle*i;
     var h = 1500 + Math.random()*200;
-    c.mesh.position.y = Math.sin(a)*h;
-    c.mesh.position.x = Math.cos(a)*h;
-    c.mesh.position.z = Math.random()* (3000 - (-3000)) + (-3000);
-    c.mesh.rotation.z = a + Math.PI/2;
+    clouds.mesh.position.y = Math.sin(a)*h;
+    clouds.mesh.position.x = Math.cos(a)*h;
+    clouds.mesh.position.z = Math.random()* (3000 - (-3000)) + (-3000);
+    clouds.mesh.rotation.z = a + Math.PI/2;
     var s = 1 + Math.random() * 5;
-    c.mesh.scale.set(s,s,s);
-    this.mesh.add(c.mesh);
+    clouds.mesh.scale.set(s,s,s);
+    this.mesh.add(clouds.mesh);
   }
 }
 
-Cloud = function(){
+Clouds = function(){
   this.mesh = new THREE.Object3D();
   this.mesh.name = "cloud";
-  var geom = new THREE.IcosahedronGeometry(50)
+  var geom = new THREE.IcosahedronGeometry(50);
   var mat = new THREE.MeshPhongMaterial({
     color:colors.lavender,
     transparent:true,
@@ -188,6 +189,85 @@ Cloud = function(){
     m.receiveShadow = true;
     this.mesh.add(m);
   }
+}
+
+var birdsPool = [];
+
+Bird = function(){
+
+  var flamingoLoader = new THREE.JSONLoader();
+
+  flamingoLoader.load( "models/flamingo.js", function( geometry ) {
+
+  addMorph( geometry, 500, 1, 300, 350, 40, true );
+
+  });
+
+}
+
+BirdsHolder = function (){
+  this.mesh = new THREE.Object3D();
+  this.birdsInUse = [];
+}
+
+BirdsHolder.prototype.spawnBirds = function(){
+
+    var counter = 0;
+    counter += 1;
+
+
+    if (counter < 2) {
+      bird = new Bird();
+    }
+
+
+
+
+    // bird.mesh.position.y = 200;
+    // bird.mesh.position.x = 200;
+    // bird.mesh.position.z = 0;
+
+    this.mesh.add(bird.mesh);
+    this.birdsInUse.push(bird);
+
+}
+
+var mixer,
+    morphs = [];
+
+mixer = new THREE.AnimationMixer( scene );
+
+function addMorph( geometry, speed, duration, x, y, z, fudgeColor ) {
+
+  var material = new THREE.MeshLambertMaterial( { color: 0xffaa55, morphTargets: true, vertexColors: THREE.FaceColors } );
+
+  if ( fudgeColor ) {
+
+    material.color.offsetHSL( 0, Math.random() * 0.5 - 0.25, Math.random() * 0.5 - 0.25 );
+
+  }
+
+  var mesh = new THREE.Mesh( geometry, material );
+  mesh.speed = speed;
+
+  var clip = geometry.animations[ 0 ];
+
+  mixer.clipAction( clip, mesh ).
+      setDuration( duration ).
+      // to shift the playback out of phase:
+      startAt( - duration * Math.random() ).
+      play();
+
+  mesh.position.set( x, y, z );
+  mesh.rotation.y = Math.PI/2;
+
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+
+  scene.add( mesh );
+
+  morphs.push( mesh );
+
 }
 
 
@@ -228,7 +308,43 @@ function createSky(){
   scene.add(sky.mesh);
 }
 
+function createBirds(){
+  for (var i=0; i<2; i++){
+    var bird = new Bird();
+    birdsPool.push(bird);
+  }
+  birdsHolder = new BirdsHolder();
+  //ennemiesHolder.mesh.position.y = -game.seaRadius;
+  scene.add(birdsHolder.mesh)
+}
+
+var clock = new THREE.Clock();
+
+function renderAnimatedModels() {
+
+  var delta = clock.getDelta();
+
+  mixer.update( delta );
+
+  for ( var i = 0; i < morphs.length; i ++ ) {
+
+    morph = morphs[ i ];
+
+    morph.position.x += morph.speed * delta;
+
+    if ( morph.position.x  > 2000 )  {
+
+      morph.position.x = -1000 - Math.random() * 500;
+
+    }
+  }
+}
+
 function loop(){
+
+  renderAnimatedModels();
+
+  birdsHolder.spawnBirds();
   updateHouse();
   updateCameraFov();
   ground.mesh.rotation.z += .005;
