@@ -140,7 +140,7 @@ function createScene() {
 
   //Camera starting postion
 
-  camera.position.x = -300;
+  camera.position.x = -350;
   camera.position.z = 0;
   camera.position.y = 200;
 
@@ -369,7 +369,8 @@ function createHouse(){
   var loader = new THREE.ColladaLoader();
   loader.load('models/up-house-with-balloons.dae', function (houseCollada) {
     house = houseCollada;
-    houseCollada.scene.scale.set(0.15,0.15,0.15);
+    var s = .25
+    houseCollada.scene.scale.set(s, s, s);
     houseCollada.scene.position.y = 0;
 
     houseCollada.scene.rotation.y = 0;
@@ -542,7 +543,7 @@ function updateCameraFov(){
     //Camera Point to the House
     camera.lookAt( house.scene.position );
   }
-  camera.fov = normalize(mousePos.y,-1,1,30,80);
+  camera.fov = normalize(mousePos.y,-1,1,50,80);
   camera.updateProjectionMatrix();
 }
 
