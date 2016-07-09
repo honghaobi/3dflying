@@ -39,62 +39,58 @@ var oldTime = new Date().getTime();
 var birdsPool = [];
 var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle;
 
-var game = {speed:0,
-        initSpeed:.00035,
-        baseSpeed:.00035,
-        targetBaseSpeed:.00035,
-        incrementSpeedByTime:.0000025,
-        incrementSpeedByLevel:.000005,
-        distanceForSpeedUpdate:100,
-        speedLastUpdate:0,
+var game = {
+        speed: 0,
+        initSpeed: .00035,
+        baseSpeed: .00035,
+        targetBaseSpeed: .00035,
+        incrementSpeedByTime: .0000025,
+        incrementSpeedByLevel: .000005,
+        distanceForSpeedUpdate: 100,
+        speedLastUpdate: 0,
 
-        distance:0,
-        ratioSpeedDistance:50,
-        energy:100,
-        ratioSpeedEnergy:3,
+        distance: 0,
+        ratioSpeedDistance: 50,
+        energy: 100,
+        ratioSpeedEnergy: 3,
 
-        level:1,
-        levelLastUpdate:0,
-        distanceForLevelUpdate:1000,
+        level: 1,
+        levelLastUpdate: 0,
+        distanceForLevelUpdate: 1000,
 
-        houseDefaultHeight:100,
-        houseAmpHeight:80,
-        houseAmpWidth:75,
-        houseMoveSensivity:0.005,
-        houseRotXSensivity:0.0008,
-        houseRotZSensivity:0.0004,
-        houseFallSpeed:.001,
-        houseMinSpeed:1.2,
-        houseMaxSpeed:1.6,
-        houseSpeed:0,
-        houseCollisionDisplacementX:0,
-        houseCollisionSpeedX:0,
+        houseDefaultHeight: 100,
+        houseAmpHeight: 80,
+        houseAmpWidth: 75,
+        houseMoveSensivity: 0.005,
+        houseRotXSensivity: 0.0008,
+        houseRotZSensivity: 0.0004,
+        houseFallSpeed: .001,
+        houseMinSpeed: 1.2,
+        houseMaxSpeed: 1.6,
+        houseSpeed: 0,
+        houseCollisionDisplacementX: 0,
+        houseCollisionSpeedX: 0,
 
-        houseCollisionDisplacementY:0,
-        houseCollisionSpeedY:0,
+        houseCollisionDisplacementY: 0,
+        houseCollisionSpeedY: 0,
 
-        landRadius:600,
-        seaLength:800,
-        //seaRotationSpeed:0.006,
-        wavesMinAmp : 5,
-        wavesMaxAmp : 20,
-        wavesMinSpeed : 0.001,
-        wavesMaxSpeed : 0.003,
+        landRadius: 600,
 
         cameraFarPos:500,
         cameraNearPos:150,
         cameraSensivity:0.002,
 
-        coinDistanceTolerance:15,
-        coinValue:3,
-        coinsSpeed:.5,
-        coinLastSpawn:0,
-        distanceForCoinsSpawn:100,
+        // coinDistanceTolerance:15,
+        // coinValue:3,
+        // coinsSpeed:.5,
+        // coinLastSpawn:0,
+        // distanceForCoinsSpawn: 100,
 
-        ennemyDistanceTolerance:10,
-        ennemyValue:10,
-        ennemiesSpeed:.6,
-        ennemyLastSpawn:0,
+        //birds collosion contact tolorance
+        birdDistanceTolerance: 65,
+        birdValue:10,
+        birdsSpeed:.6,
+        birdLastSpawn:0,
         distanceForEnnemiesSpawn:50,
 
         status : "playing",
@@ -331,7 +327,7 @@ BirdsHolder.prototype.spawnBirds = function(){
 BirdsHolder.prototype.rotateBirds = function(){
   for (var i=0; i<this.birdsInUse.length; i++){
     var bird = this.birdsInUse[i];
-    bird.angle += game.speed*deltaTime*game.ennemiesSpeed;
+    bird.angle += game.speed*deltaTime*game.birdsSpeed;
 
     if (bird.angle > Math.PI*2) bird.angle -= Math.PI*2;
 
@@ -339,9 +335,10 @@ BirdsHolder.prototype.rotateBirds = function(){
     bird.mesh.position.x = Math.cos(bird.angle)*bird.distance;
 
     var diffPos = house.scene.position.clone().sub(bird.mesh.position.clone());
+    console.log(diffPos.length());
     var d = diffPos.length();
-    if (d<game.ennemyDistanceTolerance){
-
+    if (d<game.birdDistanceTolerance){
+      console.log('d', d);
 
       // particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, Colors.red, 3);
 
@@ -418,7 +415,6 @@ function renderAnimatedModels() {
   }
 }
 
-var count = 0;
 
 function loop(){
 
@@ -436,10 +432,8 @@ function loop(){
     }
 
 
-    if (Math.floor(game.distance)%game.distanceForEnnemiesSpawn == 0 && Math.floor(game.distance) > game.ennemyLastSpawn){
-      game.ennemyLastSpawn = Math.floor(game.distance);
-      console.log('spawn', count);
-      count ++;
+    if (Math.floor(game.distance)%game.distanceForEnnemiesSpawn == 0 && Math.floor(game.distance) > game.birdLastSpawn){
+      game.birdLastSpawn = Math.floor(game.distance);
       birdsHolder.spawnBirds();
     }
 
