@@ -76,17 +76,17 @@ var game = {
         houseCollisionDisplacementY: 0,
         houseCollisionSpeedY: 0,
 
-        landRadius: 600,
+        landRadius: 800,
 
         cameraFarPos: 500,
         cameraNearPos: 150,
         cameraSensivity: 0.002,
 
-        balloonDistanceTolerance:50,
+        balloonDistanceTolerance:60,
         balloonValue: 3,
         balloonsSpeed: .5,
         balloonLastSpawn: 0,
-        distanceForBalloonsSpawn: 100,
+        distanceForBalloonsSpawn: 30,
 
         //birds collosion contact tolorance
         birdDistanceTolerance: 60,
@@ -267,12 +267,12 @@ Clouds = function(){
 
 Balloon = function(){
 
-  var ballonColorsArray = [0xFF0077, 0x00FF00, 0xFFFF00,0xFF3300, 0xFF0009, 0x6600FF, 0x0000FF, 0x00FFFF];
-  ballonsColorsRandom = ballonColorsArray[Math.floor(Math.random()*8)];
+  var balloonColorsArray = [0xFF0077, 0x00FF00, 0xFFFF00,0xFF3300, 0xFF0009, 0x6600FF, 0x0000FF, 0x00FFFF];
+  balloonsColorsRandom = balloonColorsArray[Math.floor(Math.random()*8)];
 
   var sphereGeometry = new THREE.SphereGeometry(8, 64, 64);
   var material = new THREE.MeshPhongMaterial({
-    color: ballonsColorsRandom,
+    color: balloonsColorsRandom,
     shininess: 20,
     specular: colors.white,
     morphTargets: true,
@@ -300,8 +300,11 @@ BalloonsHolder = function (nBalloons){
 BalloonsHolder.prototype.spawnBalloons = function(){
 
   var nBalloons = 1 + Math.floor(Math.random()*10);
+
   var d = game.landRadius + game.houseDefaultHeight + (-1 + Math.random() * 2) * (game.houseAmpHeight-20);
+
   var amplitude = 10 + Math.round(Math.random()*10);
+
   for (var i=0; i<nBalloons; i++){
     var balloon;
     if (this.balloonsPool.length) {
@@ -309,31 +312,63 @@ BalloonsHolder.prototype.spawnBalloons = function(){
     }else{
       balloon = new Balloon();
     }
-    this.mesh.add(balloon.mesh);
-    this.balloonsInUse.push(balloon);
+
     balloon.angle = - (i*0.02);
     balloon.distance = d + Math.cos(i*.5)*amplitude;
-    balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle)*balloon.distance;
-    balloon.mesh.position.x = Math.cos(balloon.angle)*balloon.distance;
+    // balloon.distance = 10;
+    balloon.mesh.position.y = -game.landRadius + 10 * balloon.distance;
+
+    balloon.mesh.position.x = Math.cos(balloon.angle) * balloon.distance;
+    balloon.mesh.position.z = Math.random()* (300 - (-300)) + (-300);
+
+    this.mesh.add(balloon.mesh);
+    this.balloonsInUse.push(balloon);
   }
 }
 
-BalloonsHolder.prototype.rotateBalloons = function(){
+BalloonsHolder.prototype.animateBalloons = function(){
   for (var i=0; i<this.balloonsInUse.length; i++){
     var balloon = this.balloonsInUse[i];
-    if (balloon.exploding) continue;
-    balloon.angle += game.speed*deltaTime*game.balloonsSpeed;
-    if (balloon.angle>Math.PI*2) balloon.angle -= Math.PI*2;
-    balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle)*balloon.distance;
-    balloon.mesh.position.x = Math.cos(balloon.angle)*balloon.distance;
-    balloon.mesh.rotation.z += Math.random()*.1;
-    balloon.mesh.rotation.y += Math.random()*.1;
+    if (balloon.exploding) {
+      continue;
+    }
 
-    var diffPos = house.scene.position.clone().sub(balloon.mesh.position.clone());
-    var d = diffPos.length();
-    if (d<game.balloonDistanceTolerance){
+    balloon.angle += game.speed*deltaTime*game.balloonsSpeed;
+    if (balloon.angle>Math.PI*2) {
+      balloon.angle -= Math.PI*2;
+    }
+
+    // balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle)*balloon.distance;
+
+    balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle)*balloon.distance;
+
+
+    balloon.mesh.position.x = Math.cos(balloon.angle)*balloon.distance;
+
+
+
+    // balloon.mesh.rotation.z += Math.random()*.01;
+    // balloon.mesh.rotation.y += Math.random()*.01;
+    var balloonsPos = new THREE.Vector3();
+
+    balloonsPos.x = house.scene.position.x;
+    balloonsPos.y = house.scene.position.y + 100;
+    balloonsPos.z = house.scene.position.z;
+
+    var diffBalloonsPos = balloonsPos.clone().sub(balloon.mesh.position.clone());
+    var diffHousePos = house.scene.position.clone().sub(balloon.mesh.position.clone());
+
+
+      // particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, Colors.red, 3);
+
+
+    var dh = diffHousePos.length();
+    var db = diffBalloonsPos.length();
+
+    if (dh < game.balloonDistanceTolerance || db < game.balloonDistanceTolerance){
       this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
       this.mesh.remove(balloon.mesh);
+
       // particlesHolder.spawnParticles(balloon.mesh.position.clone(), 5, 0x009999, .8);
       // addEnergy();
       i--;
@@ -381,7 +416,6 @@ BirdsHolder = function (){
   this.birdsInUse = [];
 }
 
-var counter = 0;
 
 BirdsHolder.prototype.spawnBirds = function(){
 
@@ -407,14 +441,17 @@ BirdsHolder.prototype.spawnBirds = function(){
 }
 
 
-BirdsHolder.prototype.rotateBirds = function(){
+BirdsHolder.prototype.animateBirds = function(){
   for (var i=0; i<this.birdsInUse.length; i++){
     var bird = this.birdsInUse[i];
     bird.angle += game.speed*deltaTime*game.birdsSpeed;
 
-    if (bird.angle > Math.PI*2) bird.angle -= Math.PI*2;
+    if (bird.angle > Math.PI*2) {
+      bird.angle -= Math.PI*2;
+    }
 
     bird.mesh.position.y = -game.landRadius + Math.sin(bird.angle)*bird.distance;
+    // bird.mesh.position.z = -game.landRadius + Math.sin(bird.angle)*bird.distance;
     bird.mesh.position.x = Math.cos(bird.angle)*bird.distance;
 
 
@@ -570,8 +607,8 @@ function loop(){
 
   renderAnimatedModels();
   updateCameraFov();
-  balloonsHolder.rotateBalloons();
-  birdsHolder.rotateBirds();
+  balloonsHolder.animateBalloons();
+  birdsHolder.animateBirds();
 
   ground.mesh.rotation.z += .005;
   sky.mesh.rotation.z += .005;
