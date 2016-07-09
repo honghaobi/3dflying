@@ -82,11 +82,11 @@ var game = {
         cameraNearPos: 150,
         cameraSensivity: 0.002,
 
-        // coinDistanceTolerance:15,
-        // coinValue:3,
-        // coinsSpeed:.5,
-        // coinLastSpawn:0,
-        // distanceForCoinsSpawn: 100,
+        balloonDistanceTolerance:50,
+        balloonValue: 3,
+        balloonsSpeed: .5,
+        balloonLastSpawn: 0,
+        distanceForBalloonsSpawn: 100,
 
         //birds collosion contact tolorance
         birdDistanceTolerance: 60,
@@ -109,6 +109,7 @@ function init(event){
   createHouse();
   createGround();
   createSky();
+  createBalloons();
   createBirds();
   loop();
 }
@@ -144,7 +145,7 @@ function createScene() {
 
   // camera.lookAt( scene.position );
 
-//Create fog
+  //Create fog
 
   scene.fog = new THREE.Fog(colors.lavender, 300, 1500);
 
@@ -264,6 +265,80 @@ Clouds = function(){
   }
 }
 
+Balloon = function(){
+  var sphereGeometry = new THREE.SphereGeometry(50, 32, 32);
+  var material = new THREE.MeshBasicMaterial({
+    color: colors.navy,
+    shininess: 20,
+    specular: colors.white,
+    shading: THREE.FlatShading
+  });
+
+  this.mesh = new THREE.Mesh(sphereGeometry, material);
+  this.mesh.scale.y = 1.3;
+  this.mesh.castShadow = true;
+  this.angle = 0;
+  this.dist = 0;
+}
+
+BalloonsHolder = function (nBalloons){
+  this.mesh = new THREE.Object3D();
+  this.balloonsInUse = [];
+  this.balloonsPool = [];
+  for (var i=0; i<nBalloons; i++){
+    var balloon = new Balloon();
+    this.balloonsPool.push(balloon);
+  }
+}
+
+BalloonsHolder.prototype.spawnBalloons = function(){
+
+  var nBalloons = 1 + Math.floor(Math.random()*10);
+  var d = game.landRadius + game.houseDefaultHeight + (-1 + Math.random() * 2) * (game.houseAmpHeight-20);
+  var amplitude = 10 + Math.round(Math.random()*10);
+  for (var i=0; i<nBalloons; i++){
+    var balloon;
+    if (this.balloonsPool.length) {
+      balloon = this.balloonsPool.pop();
+    }else{
+      balloon = new Balloon();
+    }
+    this.mesh.add(balloon.mesh);
+    this.balloonsInUse.push(balloon);
+    balloon.angle = - (i*0.02);
+    balloon.distance = d + Math.cos(i*.5)*amplitude;
+    balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle)*balloon.distance;
+    balloon.mesh.position.x = Math.cos(balloon.angle)*balloon.distance;
+  }
+}
+
+BalloonsHolder.prototype.rotateBalloons = function(){
+  for (var i=0; i<this.balloonsInUse.length; i++){
+    var balloon = this.balloonsInUse[i];
+    if (balloon.exploding) continue;
+    balloon.angle += game.speed*deltaTime*game.balloonsSpeed;
+    if (balloon.angle>Math.PI*2) balloon.angle -= Math.PI*2;
+    balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle)*balloon.distance;
+    balloon.mesh.position.x = Math.cos(balloon.angle)*balloon.distance;
+    balloon.mesh.rotation.z += Math.random()*.1;
+    balloon.mesh.rotation.y += Math.random()*.1;
+
+    var diffPos = house.scene.position.clone().sub(balloon.mesh.position.clone());
+    var d = diffPos.length();
+    if (d<game.balloonDistanceTolerance){
+      this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
+      this.mesh.remove(balloon.mesh);
+      // particlesHolder.spawnParticles(balloon.mesh.position.clone(), 5, 0x009999, .8);
+      // addEnergy();
+      i--;
+    } else if (balloon.angle > Math.PI){
+      this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
+      this.mesh.remove(balloon.mesh);
+      i--;
+    }
+  }
+}
+
 Bird = function(){
   var self = this;
   var birdsLoader = new THREE.JSONLoader();
@@ -273,8 +348,8 @@ Bird = function(){
 
   birdsLoader.load( birdsRandom, function( geometry ) {
     var material = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
-      specular: 0xffffff,
+      color: colors.white,
+      specular: colors.white,
       shininess: 20,
       morphTargets: true,
       vertexColors: THREE.FaceColors,
@@ -320,12 +395,10 @@ BirdsHolder.prototype.spawnBirds = function(){
     bird.mesh.position.x = Math.cos(bird.angle)*bird.distance;
     bird.mesh.position.z = Math.random()* (300 - (-300)) + (-300);
 
-
     this.mesh.add(bird.mesh);
     this.birdsInUse.push(bird);
   }
 }
-
 
 
 BirdsHolder.prototype.rotateBirds = function(){
@@ -339,19 +412,19 @@ BirdsHolder.prototype.rotateBirds = function(){
     bird.mesh.position.x = Math.cos(bird.angle)*bird.distance;
 
 
-    //Setting the ballons position for collision detection
-    var ballonsPos = new THREE.Vector3();
+    //Setting the balloons position for collision detection
+    var balloonsPos = new THREE.Vector3();
 
-    ballonsPos.x = house.scene.position.x;
-    ballonsPos.y = house.scene.position.y + 100;
-    ballonsPos.z = house.scene.position.z;
+    balloonsPos.x = house.scene.position.x;
+    balloonsPos.y = house.scene.position.y + 100;
+    balloonsPos.z = house.scene.position.z;
 
-    var diffBallonsPos = ballonsPos.clone().sub(bird.mesh.position.clone());
+    var diffBalloonsPos = balloonsPos.clone().sub(bird.mesh.position.clone());
     var diffHousePos = house.scene.position.clone().sub(bird.mesh.position.clone());
 
 
     var dh = diffHousePos.length();
-    var db = diffBallonsPos.length();
+    var db = diffBalloonsPos.length();
 
     if (dh < game.birdDistanceTolerance || db < game.birdDistanceTolerance){
 
@@ -416,6 +489,12 @@ function createSky(){
   scene.add(sky.mesh);
 }
 
+function createBalloons(){
+
+  balloonsHolder = new BalloonsHolder(20);
+  scene.add(balloonsHolder.mesh)
+}
+
 function createBirds(){
   for (var i=0; i<10; i++){
     var bird = new Bird();
@@ -450,6 +529,11 @@ function loop(){
 
   if (game.status=="playing"){
 
+    if (Math.floor(game.distance)%game.distanceForBalloonsSpawn == 0 && Math.floor(game.distance) > game.balloonLastSpawn){
+      game.balloonLastSpawn = Math.floor(game.distance);
+      balloonsHolder.spawnBalloons();
+    }
+
     if (Math.floor(game.distance)%game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate){
       game.speedLastUpdate = Math.floor(game.distance);
       game.targetBaseSpeed += game.incrementSpeedByTime*deltaTime;
@@ -480,6 +564,7 @@ function loop(){
 
   renderAnimatedModels();
   updateCameraFov();
+  balloonsHolder.rotateBalloons();
   birdsHolder.rotateBirds();
 
   ground.mesh.rotation.z += .005;
@@ -589,19 +674,5 @@ function handleTouchMove(event) {
     mousePos = {x:tx, y:ty};
 }
 
-function handleMouseUp(event){
-  if (game.status == "waitingReplay"){
-    // resetGame();
-    // hideReplay();
-  }
-}
-
-
-function handleTouchEnd(event){
-  if (game.status == "waitingReplay"){
-    // resetGame();
-    // hideReplay();
-  }
-}
 
 window.addEventListener('load', init, false);
