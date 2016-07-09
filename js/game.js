@@ -499,6 +499,23 @@ function updateHouse(){
     var housePos = house.scene.position;
     var houseRot = house.scene.rotation;
 
+    game.houseSpeed = normalize(mousePos.x,-.5,.5,game.houseMinSpeed, game.houseMaxSpeed);
+    game.houseCollisionDisplacementX += game.houseCollisionSpeedX;
+    tx += game.houseCollisionDisplacementX;
+    game.houseCollisionDisplacementY += game.houseCollisionSpeedY;
+    ty += game.houseCollisionDisplacementY;
+
+    // house.scene.position.y += (ty-house.scene.position.y)*deltaTime*game.houseMoveSensivity;
+    // house.scene.position.x += (tx-house.scene.position.x)*deltaTime*game.houseMoveSensivity;
+
+    var targetCameraZ = normalize(game.houseSpeed, game.houseMinSpeed, game.houseMaxSpeed, game.cameraNearPos, game.cameraFarPos);
+    camera.fov = normalize(mousePos.x,-1,1,40, 80);
+
+    game.houseCollisionSpeedX += (0-game.houseCollisionSpeedX)*deltaTime * 0.03;
+    game.houseCollisionDisplacementX += (0-game.houseCollisionDisplacementX)*deltaTime *0.01;
+    game.houseCollisionSpeedY += (0-game.houseCollisionSpeedY)*deltaTime * 0.03;
+    game.houseCollisionDisplacementY += (0-game.houseCollisionDisplacementY)*deltaTime *0.01;
+
     //limit on z axis (left and right)
 
     if (housePos.z > 300) {
@@ -516,8 +533,6 @@ function updateHouse(){
   }
 
   game.houseSpeed = normalize(mousePos.x,-.5,.5,game.houseMinSpeed, game.houseMaxSpeed);
-
-
 
 }
 
