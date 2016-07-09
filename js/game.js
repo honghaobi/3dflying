@@ -27,6 +27,10 @@ var HEIGHT,
     mousePos = { x: 0, y: 0 };
 
 
+//For animation frames
+var mixers = [];
+
+
 //Initializing
 
 function init(event){
@@ -198,8 +202,20 @@ Bird = function(){
   var flamingoLoader = new THREE.JSONLoader();
 
   flamingoLoader.load( "models/flamingo.js", function( geometry ) {
+    var material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 20, morphTargets: true, vertexColors: THREE.FaceColors, shading: THREE.FlatShading } );
 
-  addMorph( geometry, 500, 1, 300, 350, 40, true );
+		var mesh = new THREE.Mesh( geometry, material );
+		var s = 0.35;
+		mesh.scale.set( s, s, s );
+		mesh.position.y = 200;
+		mesh.rotation.y = -1;
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+		scene.add( mesh );
+		var mixer = new THREE.AnimationMixer( mesh );
+		mixer.clipAction( geometry.animations[ 0 ] ).setDuration( 1 ).play();
+		mixers.push( mixer );
+
 
   });
 
@@ -210,66 +226,24 @@ BirdsHolder = function (){
   this.birdsInUse = [];
 }
 
+var counter = 0;
+
 BirdsHolder.prototype.spawnBirds = function(){
 
-    var counter = 0;
-    counter += 1;
+
+    counter +=1;
 
 
     if (counter < 2) {
       bird = new Bird();
+    } else {
+      return;
     }
-
-
-
-
-    // bird.mesh.position.y = 200;
-    // bird.mesh.position.x = 200;
-    // bird.mesh.position.z = 0;
 
     this.mesh.add(bird.mesh);
     this.birdsInUse.push(bird);
 
 }
-
-var mixer,
-    morphs = [];
-
-mixer = new THREE.AnimationMixer( scene );
-
-function addMorph( geometry, speed, duration, x, y, z, fudgeColor ) {
-
-  var material = new THREE.MeshLambertMaterial( { color: 0xffaa55, morphTargets: true, vertexColors: THREE.FaceColors } );
-
-  if ( fudgeColor ) {
-
-    material.color.offsetHSL( 0, Math.random() * 0.5 - 0.25, Math.random() * 0.5 - 0.25 );
-
-  }
-
-  var mesh = new THREE.Mesh( geometry, material );
-  mesh.speed = speed;
-
-  var clip = geometry.animations[ 0 ];
-
-  mixer.clipAction( clip, mesh ).
-      setDuration( duration ).
-      // to shift the playback out of phase:
-      startAt( - duration * Math.random() ).
-      play();
-
-  mesh.position.set( x, y, z );
-  mesh.rotation.y = Math.PI/2;
-
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-
-  scene.add( mesh );
-
-  morphs.push( mesh );
-
-}
-
 
 // 3D Models
 var ground;
@@ -321,22 +295,9 @@ function createBirds(){
 var clock = new THREE.Clock();
 
 function renderAnimatedModels() {
-
   var delta = clock.getDelta();
-
-  mixer.update( delta );
-
-  for ( var i = 0; i < morphs.length; i ++ ) {
-
-    morph = morphs[ i ];
-
-    morph.position.x += morph.speed * delta;
-
-    if ( morph.position.x  > 2000 )  {
-
-      morph.position.x = -1000 - Math.random() * 500;
-
-    }
+  for ( var i = 0; i < mixers.length; i ++ ) {
+    mixers[ i ].update( delta );
   }
 }
 
@@ -395,9 +356,7 @@ function updateCameraFov(){
     //Camera Point to the House
     camera.lookAt( house.scene.position );
   }
-
   camera.fov = normalize(mousePos.y,-1,1,30,80);
-
   camera.updateProjectionMatrix();
 }
 
