@@ -150,11 +150,9 @@ function init(event) {
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('touchmove', handleTouchMove, false);
 
-    display.distance = document.getElementById("distance");
     display.levelsBar = document.getElementById("levels-bar");
     display.levelsBarLevel = document.getElementById("levels-bar-level");
 
-    display.balloons = document.getElementById("balloons");
     display.balloonsBar = document.getElementById("balloons-bar");
     display.balloonsBarBalloon = document.getElementById("balloons-bar-balloon");
     display.level = document.getElementById("level");
@@ -787,10 +785,6 @@ function loop() {
             game.levelLastUpdate = Math.floor(game.distance);
             game.level++;
             gameSound.levelup[Math.floor(Math.random() * 2)].play();
-
-            // Track Level
-            display.level.innerHTML = game.level;
-
             game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level
         }
 
@@ -862,9 +856,12 @@ function updateBalloons() {
     game.balloonCounts = Math.max(0, game.balloonCounts);
 
     // Track Balloons
-    display.balloons.innerHTML = Math.floor(game.balloonCounts);
     display.balloonsBar.style.width = Math.floor(game.balloonCounts) + '%';
     display.balloonsBarBalloon.style.left = Math.floor(game.balloonCounts) - 1 + '%';
+
+    if (game.balloonCounts < 30) {
+      display.balloonsBar.style.backgroundColor = 'rgb(255, 59, 59)';
+    }
 
     if (game.balloonCounts < 1) {
         game.status = "gameover";

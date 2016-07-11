@@ -1,5 +1,6 @@
 html {
   box-sizing: border-box;
+  font-family: 'Amatic SC', cursive;
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -20,20 +21,11 @@ body {
   transition: all 2s;
 }
 
-.score {
-  right: 0;
-  top: 0;
-  position: fixed;
-  z-index: 2;
-  color: white;
-  font-size: 30px;
-}
-
 #balloons-bar-bg {
   position: fixed;
   top: 0;
   left: 0;
-  height: 20px;
+  height: 30px;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1;
@@ -43,7 +35,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  height: 20px;
+  height: 30px;
   width: 100%;
   background-color: rgba(33, 153, 232, 1);
   z-index: 2;
@@ -64,7 +56,7 @@ body {
   position: fixed;
   bottom: 0;
   left: 0;
-  height: 20px;
+  height: 30px;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1;
@@ -72,13 +64,22 @@ body {
 
 #levels-bar {
   position: fixed;
+  display: inline;
+  color: black;
+  padding-left: 2%;
+  font-size: 25px;
+  font-weight: 700;
   bottom: 0;
   left: 0;
-  height: 20px;
+  height: 30px;
   width: 100%;
   background-color: rgba(238, 115, 98, 1);
   z-index: 2;
   transition: all 2s;
+}
+
+#level-number {
+  display: inline;
 }
 
 #levels-bar-level {
