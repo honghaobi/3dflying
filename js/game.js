@@ -340,6 +340,34 @@ Balloon = function(){
   this.mesh.castShadow = true;
   this.angle = 0;
   this.dist = 0;
+
+  // Balloon bottom
+
+  var geometryBalloonBottom = new THREE.CylinderGeometry( 1, 1.5, 2, 32 );
+  var materialBalloonBottom = new THREE.MeshPhongMaterial({
+    color: balloonsColorsRandom,
+    specular: colors.white,
+    shading:THREE.FlatShading
+  });
+
+  var balloonBottom = new THREE.Mesh(geometryBalloonBottom, materialBalloonBottom);
+  balloonBottom.position.y = -8;
+  balloonBottom.castShadow = true;
+  balloonBottom.receiveShadow = true;
+  this.mesh.add(balloonBottom);
+
+  var geometryBalloonString = new THREE.CylinderGeometry( 0.05, 0.05, 20, 32 );
+  var materialBalloonString = new THREE.MeshPhongMaterial({
+    color: colors.gray,
+    specular: colors.white,
+    shading:THREE.FlatShading
+  });
+
+  var balloonString = new THREE.Mesh(geometryBalloonString, materialBalloonString);
+  balloonString.position.y = -20;
+  balloonString.castShadow = true;
+  balloonString.receiveShadow = true;
+  this.mesh.add(balloonString);
 }
 
 BalloonsHolder = function (nBalloons){
