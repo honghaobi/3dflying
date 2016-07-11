@@ -1,5 +1,5 @@
 
-  var context, soundSource, soundBuffer, url = 'up.mp3';
+  var context, soundSource, soundBuffer, url = 'sound/up.mp3';
 
   function initMusic() {
       if (typeof AudioContext !== "undefined") {
@@ -42,6 +42,8 @@
       soundSource.stop(context.currentTime);
   }
 
+
+
   // Events for the play/stop bottons
   // document.querySelector('.play').addEventListener('click', startSound);
   // document.querySelector('.stop').addEventListener('click', stopSound);
@@ -79,6 +81,3 @@
           playSound(soundSource);
       });
   }
-
-
-  initMusic();

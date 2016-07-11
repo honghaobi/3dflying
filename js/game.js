@@ -116,6 +116,14 @@ var game = {
 
 }
 
+//Game Sound Effects
+
+var gameSound ={
+  pop1: new Audio("sound/pop1.mp3"),
+  bird1: new Audio("sound/bird1.wav"),
+  cool: new Audio("sound/cool.mp3"),
+  jerk: new Audio("sound/jerk.mp3")
+}
 
 //Initializing
 
@@ -128,6 +136,7 @@ function init(event){
   display.balloons = document.getElementById("balloons");
   display.level = document.getElementById("level");
 
+  initMusic();
   createScene();
   createLights();
   createHouse();
@@ -389,6 +398,7 @@ BalloonsHolder.prototype.animateBalloons = function(){
       this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
       this.mesh.remove(balloon.mesh);
 
+      gameSound.pop1.play();
       addBalloons();
 
       i--;
@@ -504,7 +514,9 @@ BirdsHolder.prototype.animateBirds = function(){
       //Light intensity flashed when collide with birds.
       ambientLight.intensity = 2;
 
+      gameSound.bird1.play();
       removeBalloons();
+
       i--;
     } else if (bird.angle > Math.PI){
       birdsPool.unshift(this.birdsInUse.splice(i, 1)[0]);
@@ -525,6 +537,7 @@ Particle = function(){
 }
 
 Particle.prototype.explode = function(pos, color, scale){
+
   var self = this;
   var parent = this.mesh.parent;
   this.mesh.material.color = new THREE.Color(color);
@@ -703,6 +716,7 @@ function loop() {
     if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate){
       game.levelLastUpdate = Math.floor(game.distance);
       game.level++;
+      gameSound.cool.play();
 
       // Track Level
       display.level.innerHTML = game.level;
@@ -713,6 +727,7 @@ function loop() {
     updateHouse();
     updateBalloons();
     updateDistance();
+
     game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
     game.speed = game.baseSpeed * game.houseSpeed;
 
