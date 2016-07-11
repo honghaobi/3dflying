@@ -48,8 +48,10 @@ var particlesInUse = [];
 
 var display = {
     level: 1,
+    distance: 0,
     balloons: 100,
-    distance: 0
+    balloonsBar: 100,
+    balloonsBarBalloon: 100
 }
 
 
@@ -148,6 +150,8 @@ function init(event) {
 
     display.distance = document.getElementById("distance");
     display.balloons = document.getElementById("balloons");
+    display.balloonsBar = document.getElementById("balloons-bar");
+    display.balloonsBarBalloon = document.getElementById("balloons-bar-balloon");
     display.level = document.getElementById("level");
 
     initMusic();
@@ -825,8 +829,8 @@ function updateDistance() {
 
     // Track Distance
     display.distance.innerHTML = Math.floor(game.distance);
-    // console.log('distance', game.distance);
     var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
+
     // levelCircle.setAttribute("stroke-dashoffset", d);
 
 }
@@ -837,6 +841,8 @@ function updateBalloons() {
 
     // Track Balloons
     display.balloons.innerHTML = Math.floor(game.balloonCounts);
+    display.balloonsBar.style.width = Math.floor(game.balloonCounts) + '%';
+    display.balloonsBarBalloon.style.left = Math.floor(game.balloonCounts) - 1 + '%';
 
     if (game.balloonCounts < 1) {
         game.status = "gameover";
