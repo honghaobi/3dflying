@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  #balloons-bar-bg
+  #balloons-bar
+  img#balloons-bar-balloon(src='img/balloon-bar.png', alt='bb')
+  #levels-bar-bg
+  #levels-bar
+    | LEVEL
+    #level-number 1
+  img#levels-bar-level(src='img/russell-small.png', alt='lb')
+  #world.world
+  script(type='text/javascript', src='js/jquery-3.0.0.js')
+  script(type='text/javascript', src='js/stats.js')
+  script(type='text/javascript', src='js/TweenMax.js')
+  script(type='text/javascript', src='js/three.js')
+  script(type='text/javascript', src='js/collada.js')
+  script(type='text/javascript', src='js/bg-music.js')
+  script(type='text/javascript', src='js/game.js')
