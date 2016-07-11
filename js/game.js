@@ -122,6 +122,8 @@ var game = {
 function init(event){
 
   document.addEventListener('mousemove', handleMouseMove, false);
+  document.addEventListener('touchmove', handleTouchMove, false);
+
   display.distance = document.getElementById("distance");
   display.balloons = document.getElementById("balloons");
   display.level = document.getElementById("level");
@@ -856,6 +858,5 @@ function handleTouchMove(event) {
     var ty = 1 - (event.touches[0].pageY / HEIGHT)*2;
     mousePos = {x:tx, y:ty};
 }
-
 
 window.addEventListener('load', init, false);
