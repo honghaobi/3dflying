@@ -150,12 +150,12 @@ function init(event) {
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('touchmove', handleTouchMove, false);
 
+    display.level = document.getElementById("level-number");
     display.levelsBar = document.getElementById("levels-bar");
     display.levelsBarLevel = document.getElementById("levels-bar-level");
 
     display.balloonsBar = document.getElementById("balloons-bar");
     display.balloonsBarBalloon = document.getElementById("balloons-bar-balloon");
-    display.level = document.getElementById("level");
 
     initMusic();
     createScene();
@@ -787,7 +787,9 @@ function loop() {
             game.levelLastUpdate = Math.floor(game.distance);
             game.level++;
             gameSound.levelup[Math.floor(Math.random() * 2)].play();
-            game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level
+            game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level;
+
+
         }
 
         updateHouse();
@@ -830,6 +832,10 @@ function updateDistance() {
 
     // Track Distance
     display.distance.innerHTML = Math.floor(game.distance);
+
+    //Track Level
+    display.level.innerHTML = game.level;
+
     var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
 
     display.levelsBar.style.width = Math.floor((game.distance/10) % 100) + '%';
