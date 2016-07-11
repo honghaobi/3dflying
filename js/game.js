@@ -325,7 +325,7 @@ BalloonsHolder.prototype.spawnBalloons = function(){
 
     balloon.angle = - (i*0.02);
     balloon.distance = d + Math.cos(i*.5)*amplitude;
-    // balloon.distance = 10;
+
     balloon.mesh.position.y = -game.landRadius + 10 * balloon.distance;
 
     balloon.mesh.position.x = Math.cos(balloon.angle) * balloon.distance;
@@ -355,10 +355,6 @@ BalloonsHolder.prototype.animateBalloons = function(){
 
     balloon.mesh.position.x = Math.cos(balloon.angle)*balloon.distance;
 
-
-
-    balloon.mesh.rotation.z += Math.random()*.01;
-    balloon.mesh.rotation.y += Math.random()*.01;
     var balloonsPos = new THREE.Vector3();
 
     balloonsPos.x = house.scene.position.x;
@@ -375,7 +371,6 @@ BalloonsHolder.prototype.animateBalloons = function(){
       this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
       this.mesh.remove(balloon.mesh);
 
-      particlesHolder.spawnParticles(balloon.mesh.position.clone(), 5, colors.mint, .8);
       // addBalloons();
       i--;
     } else if (balloon.angle > Math.PI){
@@ -466,7 +461,7 @@ BirdsHolder.prototype.animateBirds = function(){
     var balloonsPos = new THREE.Vector3();
 
     balloonsPos.x = house.scene.position.x;
-    balloonsPos.y = house.scene.position.y + 100;
+    balloonsPos.y = house.scene.position.y + 80;
     balloonsPos.z = house.scene.position.z;
 
     var diffBalloonsPos = balloonsPos.clone().sub(bird.mesh.position.clone());
@@ -478,7 +473,8 @@ BirdsHolder.prototype.animateBirds = function(){
 
     if (dh < game.birdDistanceTolerance || db < game.birdDistanceTolerance){
 
-      particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, colors.navy, 3);
+      //Exploding Particles when collide
+      particlesHolder.spawnParticles(bird.mesh.position.clone(), 10, colors.peach, 1);
 
       //Birds disapear when collide
       birdsPool.unshift(this.birdsInUse.splice(i,1)[0]);
@@ -493,8 +489,8 @@ BirdsHolder.prototype.animateBirds = function(){
 
       // removeBalloons();
       i--;
-    }else if (bird.angle > Math.PI){
-      birdsPool.unshift(this.birdsInUse.splice(i,1)[0]);
+    } else if (bird.angle > Math.PI){
+      birdsPool.unshift(this.birdsInUse.splice(i, 1)[0]);
       this.mesh.remove(bird.mesh);
       i--;
     }
@@ -502,10 +498,9 @@ BirdsHolder.prototype.animateBirds = function(){
 }
 
 Particle = function(){
-  var geom = new THREE.TetrahedronGeometry(4,0);
+  var geom = new THREE.SphereGeometry(5, 32, 32);
   var mat = new THREE.MeshPhongMaterial({
     color: colors.lavender,
-    shininess: 20,
     specular: colors.white,
     shading: THREE.FlatShading
   });
@@ -526,9 +521,9 @@ Particle.prototype.explode = function(pos, color, scale){
       this.mesh.rotation,
       speed,
       {
-        x: Math.random()*12,
-        y: Math.random()*12,
-        z: Math.random()*12
+        x: Math.random() * 12,
+        y: Math.random() * 12,
+        z: Math.random() * 12
       }
     );
   TweenMax.to(
@@ -547,12 +542,12 @@ Particle.prototype.explode = function(pos, color, scale){
       x: tx,
       y: ty,
       z: tz,
-      delay: Math.random() *.1,
+      delay: Math.random() * .1,
       ease: Power2.easeOut,
       onComplete: function(){
         if (parent) {
           parent.remove(self.mesh);
-          self.mesh.scale.set(1,1,1);
+          self.mesh.scale.set(1, 1, 1);
           particlesPool.unshift(self);
         }
       }
