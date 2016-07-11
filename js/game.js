@@ -49,6 +49,8 @@ var particlesInUse = [];
 var display = {
     level: 1,
     distance: 0,
+    levelsBar: 0,
+    levelsBarImg: 0,
     balloons: 100,
     balloonsBar: 100,
     balloonsBarBalloon: 100
@@ -149,6 +151,9 @@ function init(event) {
     document.addEventListener('touchmove', handleTouchMove, false);
 
     display.distance = document.getElementById("distance");
+    display.levelsBar = document.getElementById("levels-bar");
+    display.levelsBarLevel = document.getElementById("levels-bar-level");
+
     display.balloons = document.getElementById("balloons");
     display.balloonsBar = document.getElementById("balloons-bar");
     display.balloonsBarBalloon = document.getElementById("balloons-bar-balloon");
@@ -831,7 +836,8 @@ function updateDistance() {
     display.distance.innerHTML = Math.floor(game.distance);
     var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
 
-    // levelCircle.setAttribute("stroke-dashoffset", d);
+    display.levelsBar.style.width = Math.floor((game.distance/10) % 100) + '%';
+    // display.levelsBarLevel.style.left = Math.floor(game.distance) - 1 + '%';
 
 }
 

@@ -58,3 +58,33 @@ body {
   z-index: 2;
   transition: all 2s;
 }
+
+#levels-bar-bg {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 20px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 1;
+}
+
+#levels-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 20px;
+  width: 100%;
+  background-color: rgba(238, 115, 98, 1);
+  z-index: 2;
+  transition: all 2s;
+}
+
+#levels-bar-level {
+  position: fixed;
+  width: 17px;
+  bottom: -1px;
+  left: 100%;
+  z-index: 2;
+  transition: all 2s;
+}
