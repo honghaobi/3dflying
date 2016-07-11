@@ -13,7 +13,7 @@
 
   // Step 2: Load our Sound using XHR
 
-  function startSound() {
+  function startBgMusic() {
       // Note: this loads asynchronously
       var request = new XMLHttpRequest();
       request.open("GET", url, true);
@@ -37,7 +37,7 @@
       soundSource.start(context.currentTime);
   }
 
-  function stopSound() {
+  function stopBgMusic() {
       // stop the source now
       soundSource.stop(context.currentTime);
   }

@@ -111,6 +111,7 @@ var game = {
         birdsSpeed: .6,
         birdLastSpawn: 0,
         distanceForBirdsSpawn: 40,
+        birdCrushCount: 0,
 
         status : "playing",
 
@@ -119,10 +120,19 @@ var game = {
 //Game Sound Effects
 
 var gameSound ={
-  pop1: new Audio("sound/pop1.mp3"),
-  bird1: new Audio("sound/bird1.wav"),
-  cool: new Audio("sound/cool.mp3"),
-  jerk: new Audio("sound/jerk.mp3")
+  pop: [new Audio("sound/pop1.mp3"),
+        new Audio("sound/pop2.mp3"),
+        new Audio("sound/pop3.mp3"),
+        new Audio("sound/pop4.mp3")],
+  bird: [new Audio("sound/bird1.wav"),
+         new Audio("sound/bird2.mp3")],
+  thud: new Audio("sound/thud.mp3"),
+  levelup: [new Audio("sound/cool.mp3"),
+            new Audio("sound/steered.mp3")],
+  leveldown: [new Audio("sound/jerk.mp3"),
+              new Audio("sound/watchit.mp3"),
+              new Audio("sound/losttime.mp3")],
+  sorryend: new Audio("sound/sorryend.m4a")
 }
 
 //Initializing
@@ -145,7 +155,7 @@ function init(event){
   createBalloons();
   createBirds();
   createParticles();
-  startSound();
+  startBgMusic();
   loop();
 }
 
@@ -398,7 +408,7 @@ BalloonsHolder.prototype.animateBalloons = function(){
       this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
       this.mesh.remove(balloon.mesh);
 
-      gameSound.pop1.play();
+      gameSound.pop[Math.floor(Math.random() * 4)].play();
       addBalloons();
 
       i--;
@@ -421,7 +431,7 @@ Bird = function(){
     var material = new THREE.MeshPhongMaterial({
       color: colors.white,
       specular: colors.white,
-      shininess: 20,
+      shininess: 10,
       morphTargets: true,
       morphNormals: true,
       vertexColors: THREE.FaceColors,
@@ -498,6 +508,7 @@ BirdsHolder.prototype.animateBirds = function(){
     var dh = diffHousePos.length();
     var db = diffBalloonsPos.length();
 
+
     if (dh < game.birdDistanceTolerance || db < game.birdDistanceTolerance){
 
       //Exploding Particles when collide
@@ -512,9 +523,18 @@ BirdsHolder.prototype.animateBirds = function(){
       game.houseCollisionSpeedY = 100 * diffHousePos.y / dh;
 
       //Light intensity flashed when collide with birds.
-      ambientLight.intensity = 2;
+      ambientLight.intensity = 1.5;
 
-      gameSound.bird1.play();
+
+
+      gameSound.bird[Math.floor(Math.random() * 2)].play();
+      gameSound.thud.play();
+
+      //Every 5 birds hit play sound
+      if (game.birdCrushCount % 5 === 0) {
+        gameSound.leveldown[Math.floor(Math.random() * 3)].play();
+      }
+      game.birdCrushCount += 1;
       removeBalloons();
 
       i--;
@@ -653,7 +673,7 @@ function createBalloons(){
 }
 
 function createBirds(){
-  for (var i=0; i<100; i++){
+  for (var i=0; i<50; i++){
     var bird = new Bird();
     birdsPool.push(bird);
   }
@@ -716,7 +736,7 @@ function loop() {
     if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate){
       game.levelLastUpdate = Math.floor(game.distance);
       game.level++;
-      gameSound.cool.play();
+      gameSound.levelup[Math.floor(Math.random() * 2)].play();
 
       // Track Level
       display.level.innerHTML = game.level;
@@ -732,16 +752,20 @@ function loop() {
     game.speed = game.baseSpeed * game.houseSpeed;
 
   } else if(game.status=="gameover") {
+
+    stopBgMusic();
+    gameSound.sorryend.play();
+
     game.speed *= .99;
     house.scene.rotation.z += (-Math.PI/2 - house.scene.rotation.z) * .0002 * deltaTime;
     house.scene.rotation.x += 0.0003*deltaTime;
     game.houseFallSpeed *= 1.05;
     house.scene.position.y -= game.houseFallSpeed*deltaTime;
 
-    if (house.scene.position.y <-500) {
-      game.status = "waitingReplay";
+      if (house.scene.position.y <-500) {
+        game.status = "waitingReplay";
+      }
     }
-  }
 
   renderAnimatedModels();
   updateCameraFov();
@@ -773,7 +797,7 @@ function updateBalloons(){
   // Track Balloons
   display.balloons.innerHTML = Math.floor(game.balloonCounts);
 
-  if (game.balloonCounts < 1){
+  if (game.balloonCounts < 1) {
     game.status = "gameover";
   }
 }
