@@ -322,7 +322,7 @@ Clouds = function(){
 
 Balloon = function(){
 
-  var balloonColorsArray = [0xFF0077, 0x00FF00, 0xFFFF00,0xFF3300, 0xFF0009, 0x6600FF, 0x0000FF, 0x00FFFF];
+  var balloonColorsArray = [0xF49AC2, 0xCB99C9, 0x77DD77,0xFFB347, 0xFF6961, 0xFDFD96, 0x779ECB, 0x966FD6];
   balloonsColorsRandom = balloonColorsArray[Math.floor(Math.random()*8)];
 
   var sphereGeometry = new THREE.SphereGeometry(8, 64, 64);
@@ -355,6 +355,8 @@ Balloon = function(){
   balloonBottom.castShadow = true;
   balloonBottom.receiveShadow = true;
   this.mesh.add(balloonBottom);
+
+  // Balloon string
 
   var geometryBalloonString = new THREE.CylinderGeometry( 0.05, 0.05, 20, 32 );
   var materialBalloonString = new THREE.MeshPhongMaterial({
@@ -416,8 +418,8 @@ BalloonsHolder.prototype.animateBalloons = function(){
       continue;
     }
 
-    balloon.angle += game.speed*deltaTime*game.balloonsSpeed;
-    if (balloon.angle>Math.PI*2) {
+    balloon.angle += game.speed * deltaTime * game.balloonsSpeed;
+    if (balloon.angle > Math.PI*2) {
       balloon.angle -= Math.PI*2;
     }
 
@@ -426,12 +428,12 @@ BalloonsHolder.prototype.animateBalloons = function(){
     balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle)*balloon.distance;
 
 
-    balloon.mesh.position.x = Math.cos(balloon.angle)*balloon.distance;
+    balloon.mesh.position.x = Math.cos(balloon.angle) * balloon.distance;
 
     var balloonsPos = new THREE.Vector3();
 
     balloonsPos.x = house.scene.position.x;
-    balloonsPos.y = house.scene.position.y + 100;
+    balloonsPos.y = house.scene.position.y + 80;
     balloonsPos.z = house.scene.position.z;
 
     var diffBalloonsPos = balloonsPos.clone().sub(balloon.mesh.position.clone());
@@ -560,7 +562,6 @@ BirdsHolder.prototype.animateBirds = function(){
 
       //Light intensity flashed when collide with birds.
       ambientLight.intensity = 1.5;
-
 
 
       gameSound.bird[Math.floor(Math.random() * 2)].play();
