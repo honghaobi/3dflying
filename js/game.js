@@ -82,6 +82,8 @@ var game = {
         houseCollisionSpeedY: 0,
 
         landRadius: 800,
+        landRotationSpeed: .005,
+        SkyRotationSpeed: .005,
 
         cameraFarPos: 500,
         cameraNearPos: 150,
@@ -418,7 +420,6 @@ BirdsHolder = function (){
   this.birdsInUse = [];
 }
 
-
 BirdsHolder.prototype.spawnBirds = function(){
 
     var nBirds = game.level;
@@ -441,7 +442,6 @@ BirdsHolder.prototype.spawnBirds = function(){
     this.birdsInUse.push(bird);
   }
 }
-
 
 BirdsHolder.prototype.animateBirds = function(){
   for (var i=0; i<this.birdsInUse.length; i++){
@@ -594,7 +594,6 @@ function createHouse(){
     houseCollada.scene.rotation.y = 0;
     houseCollada.scene.rotation.x = -1.6;
 
-
     var housePartsArray = houseCollada.scene.children[0].children[1].children;
     for (var i = 0; i < housePartsArray.length; i++) {
       housePartsArray[i].castShadow = true;
@@ -651,7 +650,7 @@ function renderAnimatedModels() {
 }
 
 
-function loop(){
+function loop() {
 
   //FPS update;
   stats.update();
@@ -669,57 +668,66 @@ function loop(){
 
   if (game.status=="playing"){
 
-    if (Math.floor(game.distance)%game.distanceForBalloonsSpawn == 0 && Math.floor(game.distance) > game.balloonLastSpawn){
+    if (Math.floor(game.distance) % game.distanceForBalloonsSpawn == 0 && Math.floor(game.distance) > game.balloonLastSpawn){
       game.balloonLastSpawn = Math.floor(game.distance);
       balloonsHolder.spawnBalloons();
     }
 
-    if (Math.floor(game.distance)%game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate){
+    if (Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate){
       game.speedLastUpdate = Math.floor(game.distance);
       game.targetBaseSpeed += game.incrementSpeedByTime*deltaTime;
     }
 
-
-    if (Math.floor(game.distance)%game.distanceForBirdsSpawn == 0 && Math.floor(game.distance) > game.birdLastSpawn){
+    if (Math.floor(game.distance) % game.distanceForBirdsSpawn == 0 && Math.floor(game.distance) > game.birdLastSpawn){
       game.birdLastSpawn = Math.floor(game.distance);
       birdsHolder.spawnBirds();
     }
 
-    if (Math.floor(game.distance)%game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate){
+    if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate){
       game.levelLastUpdate = Math.floor(game.distance);
       game.level++;
       // fieldLevel.innerHTML = Math.floor(game.level);
-      // console.log('game level', game.level);
-      game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel*game.level
+
+      game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level
     }
 
-  updateHouse();
-  updateDistance();
-  game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
-  game.speed = game.baseSpeed * game.houseSpeed;
+    updateHouse();
+    updateBalloons();
+    updateDistance();
+    game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
+    game.speed = game.baseSpeed * game.houseSpeed;
 
-} else if(game.status=="gameover") {
+  } else if(game.status=="gameover") {
+    game.speed *= .99;
+    house.scene.rotation.z += (-Math.PI/2 - house.scene.rotation.z) * .0002 * deltaTime;
+    house.scene.rotation.x += 0.0003*deltaTime;
+    game.houseFallSpeed *= 1.05;
+    house.scene.position.y -= game.houseFallSpeed*deltaTime;
 
-}
+    if (house.scene.position.y <-500) {
+      showReplay();
+      game.status = "waitingReplay";
+
+    }
+  }
 
   renderAnimatedModels();
   updateCameraFov();
   balloonsHolder.animateBalloons();
   birdsHolder.animateBirds();
 
-  ground.mesh.rotation.z += .005;
-  sky.mesh.rotation.z += .005;
-
+  ground.mesh.rotation.z += game.landRotationSpeed;
+  sky.mesh.rotation.z += game.skyRotationSpeed;
 
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
 }
 
 function updateDistance(){
-  game.distance += game.speed*deltaTime*game.ratioSpeedDistance;
+  game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
   // fieldDistance.innerHTML = Math.floor(game.distance);
   // console.log('distance', game.distance);
-  var d = 502*(1-(game.distance%game.distanceForLevelUpdate)/game.distanceForLevelUpdate);
+  var d = 502 * (1- (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
   // levelCircle.setAttribute("stroke-dashoffset", d);
 
 }
@@ -727,14 +735,14 @@ function updateDistance(){
 function updateBalloons(){
   game.energy -= game.speed*deltaTime*game.ratioSpeedBalloons;
   game.energy = Math.max(0, game.energy);
-  balloonDisplay.style.right = (100-game.energy)+"%";
-  balloonDisplay.style.backgroundColor = (game.energy<50)? "#f25346" : "#68c3c0";
-
-  if (game.energy<30){
-    balloonDisplay.style.animationName = "blinking";
-  }else{
-    balloonDisplay.style.animationName = "none";
-  }
+  // balloonDisplay.style.right = (100-game.energy)+"%";
+  // balloonDisplay.style.backgroundColor = (game.energy<50)? "#f25346" : "#68c3c0";
+  //
+  // if (game.energy<30){
+  //   balloonDisplay.style.animationName = "blinking";
+  // }else{
+  //   balloonDisplay.style.animationName = "none";
+  // }
 
   if (game.energy <1){
     game.status = "gameover";
