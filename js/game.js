@@ -83,7 +83,7 @@ var game = {
 
         landRadius: 800,
         landRotationSpeed: .005,
-        SkyRotationSpeed: .005,
+        skyRotationSpeed: .005,
 
         cameraFarPos: 500,
         cameraNearPos: 150,
@@ -285,7 +285,7 @@ Balloon = function(){
   var sphereGeometry = new THREE.SphereGeometry(8, 64, 64);
   var material = new THREE.MeshPhongMaterial({
     color: balloonsColorsRandom,
-    shininess: 20,
+    shininess: 5,
     specular: colors.white,
     morphTargets: true,
 		morphNormals: true,
@@ -705,9 +705,7 @@ function loop() {
     house.scene.position.y -= game.houseFallSpeed*deltaTime;
 
     if (house.scene.position.y <-500) {
-      showReplay();
       game.status = "waitingReplay";
-
     }
   }
 
