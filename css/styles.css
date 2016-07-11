@@ -17,6 +17,7 @@ body {
 	overflow: hidden;
 	background: -webkit-linear-gradient(#ee7261, #eadfff);
 	background: linear-gradient(#ee7261, #eadfff);
+  transition: all 2s;
 }
 
 .score {

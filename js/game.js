@@ -211,6 +211,14 @@ function createScene() {
 
 }
 
+//Change background color on level change
+//Not function transition doesnt work smoothly
+
+
+// function bgChange() {
+//   container.className = 'levelOne';
+// }
+
 //Screen resize
 
 function handleWindowResize() {
