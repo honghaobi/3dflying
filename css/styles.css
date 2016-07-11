@@ -18,3 +18,12 @@ body {
 	background: -webkit-linear-gradient(#ee7261, #eadfff);
 	background: linear-gradient(#ee7261, #eadfff);
 }
+
+.score {
+  right: 0;
+  top: 0;
+  position: fixed;
+  z-index: 2;
+  color: white;
+  font-size: 30px;
+}

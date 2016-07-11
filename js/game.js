@@ -44,9 +44,19 @@ var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
 var birdsPool = [];
 var particlesPool = [];
-var fieldDistance, balloonDisplay, fieldLevel, levelCircle;
+var particlesInUse = [];
+
+var display = {
+  level: 1,
+  balloons: 100,
+  distance: 0
+}
+
+
 
 var game = {
+        fieldDistance: 0,
+        fieldLevel: 0,
         speed: 0,
         initSpeed: .00035,
         baseSpeed: .00035,
@@ -58,7 +68,6 @@ var game = {
 
         distance: 0,
         ratioSpeedDistance: 50,
-        energy: 100,
         ratioSpeedBalloons: 3,
 
         level: 1,
@@ -89,15 +98,16 @@ var game = {
         cameraNearPos: 150,
         cameraSensivity: 0.002,
 
-        balloonDistanceTolerance:60,
-        balloonValue: 3,
+        balloonCounts: 100,
+        balloonDistanceTolerance: 60,
+        balloonValue: 1,
         balloonsSpeed: .5,
         balloonLastSpawn: 0,
-        distanceForBalloonsSpawn: 40,
+        distanceForBalloonsSpawn: 60,
 
         //birds collosion contact tolorance
         birdDistanceTolerance: 50,
-        birdValue: 10,
+        birdValue: 5,
         birdsSpeed: .6,
         birdLastSpawn: 0,
         distanceForBirdsSpawn: 40,
@@ -110,7 +120,12 @@ var game = {
 //Initializing
 
 function init(event){
+
   document.addEventListener('mousemove', handleMouseMove, false);
+  display.distance = document.getElementById("distance");
+  display.balloons = document.getElementById("balloons");
+  display.level = document.getElementById("level");
+
   createScene();
   createLights();
   createHouse();
@@ -151,8 +166,6 @@ function createScene() {
   camera.position.z = 0;
   camera.position.y = 200;
 
-  // camera.lookAt( scene.position );
-
   //Create fog
 
   scene.fog = new THREE.Fog(colors.lavender, 300, 1500);
@@ -168,7 +181,7 @@ function createScene() {
   container = document.getElementById('world');
   container.appendChild(renderer.domElement);
 
-  //stats tracker
+  //Stats tracker
 
   container.appendChild(stats.dom);
 
@@ -197,7 +210,7 @@ function createLights() {
   hemisphereLight = new THREE.HemisphereLight(colors.lavender, colors.black, .6)
   ambientLight = new THREE.AmbientLight(colors.gray);
   shadowLight = new THREE.DirectionalLight(colors.gray, 0.5);
-  shadowLight.position.set(-250, 350, 350);
+  shadowLight.position.set(-250, 450, 350);
   shadowLight.castShadow = true;
   shadowLight.shadow.camera.left = -400;
   shadowLight.shadow.camera.right = 400;
@@ -208,7 +221,7 @@ function createLights() {
   shadowLight.shadow.mapSize.width = 2048;
   shadowLight.shadow.mapSize.height = 2048;
 
-  //Testing light source.
+  // Testing light source.
   // var lightSource = new THREE.CameraHelper(shadowLight.shadow.camera);
   // scene.add(lightSource);
 
@@ -373,7 +386,8 @@ BalloonsHolder.prototype.animateBalloons = function(){
       this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
       this.mesh.remove(balloon.mesh);
 
-      // addBalloons();
+      addBalloons();
+
       i--;
     } else if (balloon.angle > Math.PI){
       this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
@@ -487,7 +501,7 @@ BirdsHolder.prototype.animateBirds = function(){
       //Light intensity flashed when collide with birds.
       ambientLight.intensity = 2;
 
-      // removeBalloons();
+      removeBalloons();
       i--;
     } else if (bird.angle > Math.PI){
       birdsPool.unshift(this.birdsInUse.splice(i, 1)[0]);
@@ -575,7 +589,7 @@ ParticlesHolder.prototype.spawnParticles = function(pos, density, color, scale){
     var _this = this;
     particle.mesh.position.y = pos.y;
     particle.mesh.position.x = pos.x;
-    particle.explode(pos,color, scale);
+    particle.explode(pos, color, scale);
   }
 }
 
@@ -663,7 +677,7 @@ function loop() {
 
 
   //light intensity changes back when hit birds.
-  ambientLight.intensity += (.5 - ambientLight.intensity)*deltaTime*0.005;
+  ambientLight.intensity += (.5 - ambientLight.intensity) * deltaTime * 0.005;
 
 
   if (game.status=="playing"){
@@ -686,7 +700,9 @@ function loop() {
     if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate){
       game.levelLastUpdate = Math.floor(game.distance);
       game.level++;
-      // fieldLevel.innerHTML = Math.floor(game.level);
+
+      // Track Level
+      display.level.innerHTML = game.level;
 
       game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level
     }
@@ -723,7 +739,9 @@ function loop() {
 
 function updateDistance(){
   game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
-  // fieldDistance.innerHTML = Math.floor(game.distance);
+
+  // Track Distance
+  display.distance.innerHTML = Math.floor(game.distance);
   // console.log('distance', game.distance);
   var d = 502 * (1- (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
   // levelCircle.setAttribute("stroke-dashoffset", d);
@@ -731,30 +749,25 @@ function updateDistance(){
 }
 
 function updateBalloons(){
-  game.energy -= game.speed*deltaTime*game.ratioSpeedBalloons;
-  game.energy = Math.max(0, game.energy);
-  // balloonDisplay.style.right = (100-game.energy)+"%";
-  // balloonDisplay.style.backgroundColor = (game.energy<50)? "#f25346" : "#68c3c0";
-  //
-  // if (game.energy<30){
-  //   balloonDisplay.style.animationName = "blinking";
-  // }else{
-  //   balloonDisplay.style.animationName = "none";
-  // }
+  game.balloonCounts -= game.speed * (deltaTime / 2) * game.ratioSpeedBalloons;
+  game.balloonCounts = Math.max(0, game.balloonCounts);
 
-  if (game.energy <1){
+  // Track Balloons
+  display.balloons.innerHTML = Math.floor(game.balloonCounts);
+
+  if (game.balloonCounts < 1){
     game.status = "gameover";
   }
 }
 
 function addBalloons(){
-  game.energy += game.coinValue;
-  game.energy = Math.min(game.energy, 100);
+  game.balloonCounts += game.balloonValue;
+  game.balloonCounts = Math.min(game.balloonCounts, 100);
 }
 
 function removeBalloons(){
-  game.energy -= game.ennemyValue;
-  game.energy = Math.max(0, game.energy);
+  game.balloonCounts -= game.birdValue;
+  game.balloonCounts = Math.max(0, game.balloonCounts);
 }
 
 function updateHouse(){
