@@ -39,6 +39,7 @@ var mixers = [];
 
 //Game Setting
 
+var game;
 var deltaTime = 0;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
@@ -56,70 +57,71 @@ var display = {
     balloonsBarBalloon: 100
 }
 
+function resetGame() {
+  game = {
+      fieldDistance: 0,
+      fieldLevel: 0,
+      speed: 0,
+      initSpeed: .00035,
+      baseSpeed: .00035,
+      targetBaseSpeed: .00035,
+      incrementSpeedByTime: .0000025,
+      incrementSpeedByLevel: .000005,
+      distanceForSpeedUpdate: 100,
+      speedLastUpdate: 0,
 
+      distance: 0,
+      ratioSpeedDistance: 50,
+      ratioSpeedBalloons: 3,
 
-var game = {
-    fieldDistance: 0,
-    fieldLevel: 0,
-    speed: 0,
-    initSpeed: .00035,
-    baseSpeed: .00035,
-    targetBaseSpeed: .00035,
-    incrementSpeedByTime: .0000025,
-    incrementSpeedByLevel: .000005,
-    distanceForSpeedUpdate: 100,
-    speedLastUpdate: 0,
+      level: 1,
+      levelLastUpdate: 0,
+      distanceForLevelUpdate: 1000,
 
-    distance: 0,
-    ratioSpeedDistance: 50,
-    ratioSpeedBalloons: 3,
+      houseDefaultHeight: 100,
+      houseAmpHeight: 80,
+      houseAmpWidth: 75,
+      houseMoveSensivity: 0.005,
+      houseRotXSensivity: 0.0008,
+      houseRotZSensivity: 0.0004,
+      houseFallSpeed: .001,
+      houseMinSpeed: 1.2,
+      houseMaxSpeed: 1.6,
+      houseSpeed: 0,
+      houseCollisionDisplacementX: 0,
+      houseCollisionSpeedX: 0,
 
-    level: 1,
-    levelLastUpdate: 0,
-    distanceForLevelUpdate: 1000,
+      houseCollisionDisplacementY: 0,
+      houseCollisionSpeedY: 0,
 
-    houseDefaultHeight: 100,
-    houseAmpHeight: 80,
-    houseAmpWidth: 75,
-    houseMoveSensivity: 0.005,
-    houseRotXSensivity: 0.0008,
-    houseRotZSensivity: 0.0004,
-    houseFallSpeed: .001,
-    houseMinSpeed: 1.2,
-    houseMaxSpeed: 1.6,
-    houseSpeed: 0,
-    houseCollisionDisplacementX: 0,
-    houseCollisionSpeedX: 0,
+      landRadius: 800,
+      landRotationSpeed: .005,
+      skyRotationSpeed: .005,
 
-    houseCollisionDisplacementY: 0,
-    houseCollisionSpeedY: 0,
+      cameraFarPos: 500,
+      cameraNearPos: 150,
+      cameraSensivity: 0.002,
 
-    landRadius: 800,
-    landRotationSpeed: .005,
-    skyRotationSpeed: .005,
+      balloonCounts: 100,
+      balloonDistanceTolerance: 60,
+      balloonValue: 1,
+      balloonsSpeed: .5,
+      balloonLastSpawn: 0,
+      distanceForBalloonsSpawn: 60,
 
-    cameraFarPos: 500,
-    cameraNearPos: 150,
-    cameraSensivity: 0.002,
+      //birds collosion contact tolorance
+      birdDistanceTolerance: 50,
+      birdValue: 5,
+      birdsSpeed: .6,
+      birdLastSpawn: 0,
+      distanceForBirdsSpawn: 40,
+      birdCrushCount: 0,
 
-    balloonCounts: 100,
-    balloonDistanceTolerance: 60,
-    balloonValue: 1,
-    balloonsSpeed: .5,
-    balloonLastSpawn: 0,
-    distanceForBalloonsSpawn: 60,
+      status: "playing",
 
-    //birds collosion contact tolorance
-    birdDistanceTolerance: 50,
-    birdValue: 5,
-    birdsSpeed: .6,
-    birdLastSpawn: 0,
-    distanceForBirdsSpawn: 40,
-    birdCrushCount: 0,
-
-    status: "playing",
-
+  }
 }
+
 
 //Game Sound Effects
 
@@ -157,6 +159,7 @@ function init(event) {
     display.balloonsBar = document.getElementById("balloons-bar");
     display.balloonsBarBalloon = document.getElementById("balloons-bar-balloon");
 
+    resetGame();
     initMusic();
     createScene();
     createLights();
@@ -169,7 +172,6 @@ function init(event) {
     startBgMusic();
     loop();
 }
-
 
 //Create Screen, Mouse Events and Camera
 
@@ -801,18 +803,12 @@ function loop() {
 
     } else if (game.status == "gameover") {
 
-        stopBgMusic();
-        gameSound.sorryend.play();
-
         game.speed *= .99;
         house.scene.rotation.z += (-Math.PI / 2 - house.scene.rotation.z) * .0002 * deltaTime;
         house.scene.rotation.x += 0.0003 * deltaTime;
         game.houseFallSpeed *= 1.05;
         house.scene.position.y -= game.houseFallSpeed * deltaTime;
 
-        if (house.scene.position.y < -500) {
-            game.status = "waitingReplay";
-        }
     }
 
     renderAnimatedModels();
@@ -873,6 +869,9 @@ function updateBalloons() {
 
     if (game.balloonCounts < 1) {
         game.status = "gameover";
+        stopBgMusic();
+        gameSound.sorryend.play();
+        showHighScore();
     }
 }
 
@@ -937,6 +936,10 @@ function updateHouse() {
 
     game.houseSpeed = normalize(mousePos.x, -.5, .5, game.houseMinSpeed, game.houseMaxSpeed);
 
+}
+
+function showHighScore() {
+  console.log('game over show score');
 }
 
 function updateCameraFov() {

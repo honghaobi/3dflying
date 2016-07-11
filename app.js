@@ -45,10 +45,10 @@ app.get('/callback',
     if (!req.user) {
       throw new Error('user null');
     }
-    res.redirect("/user");
+    res.redirect("/game");
 });
 
-app.get('/user', function (req, res) {
+app.get('/game', function (req, res) {
   console.log(req.user);
   res.render('game', {
     user: req.user
