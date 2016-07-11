@@ -24,9 +24,12 @@ var scene,
 
 //Screen & Mouse Variables
 
-var HEIGHT,
-    WIDTH,
-    mousePos = { x: 0, y: 0 };
+var HEIGHT;
+var WIDTH;
+var mousePos = {
+      x: 0,
+      y: 0
+    };
 
 var stats = new Stats();
 
@@ -40,7 +43,8 @@ var deltaTime = 0;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
 var birdsPool = [];
-var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle;
+var particlesPool = [];
+var fieldDistance, balloonDisplay, fieldLevel, levelCircle;
 
 var game = {
         speed: 0,
@@ -55,7 +59,7 @@ var game = {
         distance: 0,
         ratioSpeedDistance: 50,
         energy: 100,
-        ratioSpeedEnergy: 3,
+        ratioSpeedBalloons: 3,
 
         level: 1,
         levelLastUpdate: 0,
@@ -90,7 +94,7 @@ var game = {
         distanceForBalloonsSpawn: 40,
 
         //birds collosion contact tolorance
-        birdDistanceTolerance: 60,
+        birdDistanceTolerance: 50,
         birdValue: 10,
         birdsSpeed: .6,
         birdLastSpawn: 0,
@@ -112,6 +116,7 @@ function init(event){
   createSky();
   createBalloons();
   createBirds();
+  createParticles();
   loop();
 }
 
@@ -352,8 +357,8 @@ BalloonsHolder.prototype.animateBalloons = function(){
 
 
 
-    // balloon.mesh.rotation.z += Math.random()*.01;
-    // balloon.mesh.rotation.y += Math.random()*.01;
+    balloon.mesh.rotation.z += Math.random()*.01;
+    balloon.mesh.rotation.y += Math.random()*.01;
     var balloonsPos = new THREE.Vector3();
 
     balloonsPos.x = house.scene.position.x;
@@ -363,10 +368,6 @@ BalloonsHolder.prototype.animateBalloons = function(){
     var diffBalloonsPos = balloonsPos.clone().sub(balloon.mesh.position.clone());
     var diffHousePos = house.scene.position.clone().sub(balloon.mesh.position.clone());
 
-
-      // particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, Colors.red, 3);
-
-
     var dh = diffHousePos.length();
     var db = diffBalloonsPos.length();
 
@@ -374,8 +375,8 @@ BalloonsHolder.prototype.animateBalloons = function(){
       this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
       this.mesh.remove(balloon.mesh);
 
-      // particlesHolder.spawnParticles(balloon.mesh.position.clone(), 5, 0x009999, .8);
-      // addEnergy();
+      particlesHolder.spawnParticles(balloon.mesh.position.clone(), 5, colors.mint, .8);
+      // addBalloons();
       i--;
     } else if (balloon.angle > Math.PI){
       this.balloonsPool.unshift(this.balloonsInUse.splice(i,1)[0]);
@@ -398,6 +399,7 @@ Bird = function(){
       specular: colors.white,
       shininess: 20,
       morphTargets: true,
+      morphNormals: true,
       vertexColors: THREE.FaceColors,
       shading: THREE.FlatShading
     });
@@ -476,7 +478,7 @@ BirdsHolder.prototype.animateBirds = function(){
 
     if (dh < game.birdDistanceTolerance || db < game.birdDistanceTolerance){
 
-      // particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, Colors.red, 3);
+      particlesHolder.spawnParticles(bird.mesh.position.clone(), 15, colors.navy, 3);
 
       //Birds disapear when collide
       birdsPool.unshift(this.birdsInUse.splice(i,1)[0]);
@@ -489,13 +491,96 @@ BirdsHolder.prototype.animateBirds = function(){
       //Light intensity flashed when collide with birds.
       ambientLight.intensity = 2;
 
-      // removeEnergy();
+      // removeBalloons();
       i--;
     }else if (bird.angle > Math.PI){
       birdsPool.unshift(this.birdsInUse.splice(i,1)[0]);
       this.mesh.remove(bird.mesh);
       i--;
     }
+  }
+}
+
+Particle = function(){
+  var geom = new THREE.TetrahedronGeometry(4,0);
+  var mat = new THREE.MeshPhongMaterial({
+    color: colors.lavender,
+    shininess: 20,
+    specular: colors.white,
+    shading: THREE.FlatShading
+  });
+  this.mesh = new THREE.Mesh(geom,mat);
+}
+
+Particle.prototype.explode = function(pos, color, scale){
+  var self = this;
+  var parent = this.mesh.parent;
+  this.mesh.material.color = new THREE.Color(color);
+  this.mesh.material.needsUpdate = true;
+  this.mesh.scale.set(scale, scale, scale);
+  var tx = pos.x + (-1 + Math.random() * 2) * 50;
+  var ty = pos.y + (-1 + Math.random() * 2) * 50;
+  var tz = pos.z + (-1 + Math.random() * 2) * 50;
+  var speed = .6 + Math.random() * .2;
+  TweenMax.to(
+      this.mesh.rotation,
+      speed,
+      {
+        x: Math.random()*12,
+        y: Math.random()*12,
+        z: Math.random()*12
+      }
+    );
+  TweenMax.to(
+    this.mesh.scale,
+    speed,
+    {
+      x:.1,
+      y:.1,
+      z:.1
+    }
+  );
+  TweenMax.to(
+    this.mesh.position,
+    speed,
+    {
+      x: tx,
+      y: ty,
+      z: tz,
+      delay: Math.random() *.1,
+      ease: Power2.easeOut,
+      onComplete: function(){
+        if (parent) {
+          parent.remove(self.mesh);
+          self.mesh.scale.set(1,1,1);
+          particlesPool.unshift(self);
+        }
+      }
+    }
+  );
+}
+
+ParticlesHolder = function (){
+  this.mesh = new THREE.Object3D();
+  this.particlesInUse = [];
+}
+
+ParticlesHolder.prototype.spawnParticles = function(pos, density, color, scale){
+
+  var nParticles = density;
+  for (var i=0; i<nParticles; i++){
+    var particle;
+    if (particlesPool.length) {
+      particle = particlesPool.pop();
+    }else{
+      particle = new Particle();
+    }
+    this.mesh.add(particle.mesh);
+    particle.mesh.visible = true;
+    var _this = this;
+    particle.mesh.position.y = pos.y;
+    particle.mesh.position.x = pos.x;
+    particle.explode(pos,color, scale);
   }
 }
 
@@ -544,12 +629,21 @@ function createBalloons(){
 }
 
 function createBirds(){
-  for (var i=0; i<10; i++){
+  for (var i=0; i<100; i++){
     var bird = new Bird();
     birdsPool.push(bird);
   }
   birdsHolder = new BirdsHolder();
   scene.add(birdsHolder.mesh)
+}
+
+function createParticles(){
+  for (var i=0; i<10; i++){
+    var particle = new Particle();
+    particlesPool.push(particle);
+  }
+  particlesHolder = new ParticlesHolder();
+  scene.add(particlesHolder.mesh)
 }
 
 var clock = new THREE.Clock();
@@ -635,6 +729,33 @@ function updateDistance(){
 
 }
 
+function updateBalloons(){
+  game.energy -= game.speed*deltaTime*game.ratioSpeedBalloons;
+  game.energy = Math.max(0, game.energy);
+  balloonDisplay.style.right = (100-game.energy)+"%";
+  balloonDisplay.style.backgroundColor = (game.energy<50)? "#f25346" : "#68c3c0";
+
+  if (game.energy<30){
+    balloonDisplay.style.animationName = "blinking";
+  }else{
+    balloonDisplay.style.animationName = "none";
+  }
+
+  if (game.energy <1){
+    game.status = "gameover";
+  }
+}
+
+function addBalloons(){
+  game.energy += game.coinValue;
+  game.energy = Math.min(game.energy, 100);
+}
+
+function removeBalloons(){
+  game.energy -= game.ennemyValue;
+  game.energy = Math.max(0, game.energy);
+}
+
 function updateHouse(){
 
   //Cursor moving the house direction
@@ -659,9 +780,6 @@ function updateHouse(){
     tx += game.houseCollisionDisplacementX;
     game.houseCollisionDisplacementY += game.houseCollisionSpeedY;
     ty += game.houseCollisionDisplacementY;
-
-    // house.scene.position.y += (ty-house.scene.position.y)*deltaTime*game.houseMoveSensivity;
-    // house.scene.position.x += (tx-house.scene.position.x)*deltaTime*game.houseMoveSensivity;
 
     var targetCameraZ = normalize(game.houseSpeed, game.houseMinSpeed, game.houseMaxSpeed, game.cameraNearPos, game.cameraFarPos);
     camera.fov = normalize(mousePos.x,-1,1,40, 80);
