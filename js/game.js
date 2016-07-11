@@ -839,6 +839,22 @@ function updateDistance() {
     display.levelsBar.style.width = Math.floor((game.distance/10) % 100) + '%';
     display.levelsBarLevel.style.left = Math.floor((game.distance/10) % 100) - 2.5 + '%';
 
+    if (game.distance > 1000 && game.distance < 2000) {
+      display.levelsBar.style.backgroundColor = 'rgb(254, 229, 66)';
+    } else if (game.distance > 2000 && game.distance < 3000) {
+      display.levelsBar.style.backgroundColor = 'rgb(171, 254, 66)';
+    } else if (game.distance > 3000 && game.distance < 4000) {
+      display.levelsBar.style.backgroundColor = 'rgb(66, 254, 124)';
+    } else if (game.distance > 4000 && game.distance < 5000) {
+      display.levelsBar.style.backgroundColor = 'rgb(192, 254, 245)';
+    } else if (game.distance > 5000 && game.distance < 6000) {
+      display.levelsBar.style.backgroundColor = 'rgb(128, 117, 255)';
+    } else if (game.distance > 6000 && game.distance < 7000) {
+      display.levelsBar.style.backgroundColor = 'rgb(235, 156, 255)';
+    } else if (game.distance > 7000) {
+      display.levelsBar.style.backgroundColor = 'rgb(255, 140, 140)';
+    }
+
 }
 
 function updateBalloons() {
