@@ -136,6 +136,7 @@ function init(event){
   createBalloons();
   createBirds();
   createParticles();
+  startSound();
   loop();
 }
 
