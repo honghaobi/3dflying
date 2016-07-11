@@ -837,7 +837,7 @@ function updateDistance() {
     var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
 
     display.levelsBar.style.width = Math.floor((game.distance/10) % 100) + '%';
-    display.levelsBarLevel.style.left = Math.floor(((game.distance/10) % 100) - 1 + '%';
+    display.levelsBarLevel.style.left = Math.floor((game.distance/10) % 100) - 2.5 + '%';
 
 }
 

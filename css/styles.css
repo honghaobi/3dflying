@@ -52,11 +52,12 @@ body {
 
 #balloons-bar-balloon {
   position: fixed;
-  width: 17px;
-  top: -1px;
+  width: 23px;
+  top: -4px;
   left: 100%;
   z-index: 2;
   transition: all 2s;
+  animation: rotating 0.5s ease-in-out infinite;
 }
 
 #levels-bar-bg {
@@ -82,9 +83,34 @@ body {
 
 #levels-bar-level {
   position: fixed;
-  width: 17px;
-  bottom: -1px;
+  width: 50px;
+  bottom: -3px;
   left: 100%;
   z-index: 2;
   transition: all 2s;
+  animation: rotating 0.5s ease-in-out infinite;
+}
+
+@keyframes rotating {
+  0% {
+    -ms-transform: rotate(-5deg);
+    -moz-transform: rotate(-5deg);
+    -webkit-transform: rotate(-5deg);
+    -o-transform: rotate(-5deg);
+    transform: rotate(-5deg);
+  }
+  50% {
+    -ms-transform: rotate(5deg);
+    -moz-transform: rotate(5deg);
+    -webkit-transform: rotate(5deg);
+    -o-transform: rotate(5deg);
+    transform: rotate(5deg);
+  }
+  100% {
+    -ms-transform: rotate(-5deg);
+    -moz-transform: rotate(-5deg);
+    -webkit-transform: rotate(-5deg);
+    -o-transform: rotate(-5deg);
+    transform: rotate(-5deg);
+  }
 }
