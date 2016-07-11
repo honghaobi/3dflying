@@ -342,7 +342,9 @@ Balloon = function() {
     var sphereGeometry = new THREE.SphereGeometry(8, 64, 64);
     var material = new THREE.MeshPhongMaterial({
         color: balloonsColorsRandom,
-        shininess: 10,
+        shininess: 25,
+        transparent: true,
+        opacity: 0.75,
         specular: colors.peach,
         morphTargets: true,
         morphNormals: true,
