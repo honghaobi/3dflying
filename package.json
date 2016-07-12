@@ -15,9 +15,11 @@
     "express-session": "^1.13.0",
     "instagram-node": "^0.5.8",
     "jade": "~1.11.0",
+    "knex": "^0.11.7",
     "morgan": "~1.6.1",
     "passport": "^0.3.2",
     "passport-auth0": "^0.5.2",
+    "pg": "^6.0.2",
     "request-promise": "^3.0.0",
     "require-env": "0.0.4",
     "serve-favicon": "~2.3.0"

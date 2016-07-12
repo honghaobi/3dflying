@@ -8,6 +8,8 @@ var passport = require('passport');
 var strategy = require('./setup-passport');
 require('dotenv').load();
 
+var knex = require('./db/knex');
+
 // Session and cookies middlewares to keep user logged in
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -65,7 +67,7 @@ app.post('/highscore', function (req, res) {
 
   console.log(req.user.picture);
   console.log(req.body.distance);
-  
+
   res.send(200);
 });
 
