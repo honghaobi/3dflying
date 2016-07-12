@@ -11,6 +11,7 @@ require('dotenv').load();
 // Session and cookies middlewares to keep user logged in
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var cookieSession = require('cookie-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -48,11 +49,24 @@ app.get('/callback',
     res.redirect("/game");
 });
 
+
 app.get('/game', function (req, res) {
-  console.log(req.user);
   res.render('game', {
     user: req.user
   });
+});
+
+app.post('/highscore', function (req, res) {
+  if (req.user.provider == 'facebook' || req.user.provider =='linkedin') {
+    console.log(req.user.displayName);
+  } else if (req.user.provider == 'github' || req.user.provider == 'google-oauth2') {
+    console.log(req.user.name);
+  }
+
+  console.log(req.user.picture);
+  console.log(req.body.distance);
+  
+  res.send(200);
 });
 
 // catch 404 and forward to error handler

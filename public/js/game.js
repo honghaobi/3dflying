@@ -121,6 +121,9 @@ function resetGame() {
       status: "playing",
 
   }
+
+  startBgMusic();
+
 }
 
 
@@ -170,7 +173,6 @@ function init(event) {
     createBalloons();
     createBirds();
     createParticles();
-    startBgMusic();
     loop();
 }
 
@@ -366,6 +368,8 @@ Balloon = function() {
     var materialBalloonBottom = new THREE.MeshPhongMaterial({
         color: balloonsColorsRandom,
         specular: colors.white,
+        transparent: true,
+        opacity: 0.75,
         shading: THREE.FlatShading
     });
 
@@ -858,6 +862,7 @@ function updateDistance() {
       display.levelsBar.style.backgroundColor = 'rgb(255, 140, 140)';
     }
 
+
 }
 
 function updateBalloons() {
@@ -876,7 +881,7 @@ function updateBalloons() {
         game.status = "gameover";
         stopBgMusic();
         gameSound.sorryend.play();
-        showHighScore();
+        postScore();
     }
 }
 
@@ -943,8 +948,22 @@ function updateHouse() {
 
 }
 
-function showHighScore() {
+// console.log(Window.sessionStorage.user);
+
+function postScore() {
   console.log('game over show score');
+  var userScore = {
+    distance: Math.floor(game.distance)
+  }
+
+  $.ajax({
+    type: "POST",
+    url: '/highscore',
+    data: userScore,
+    success: function (data) {
+      console.log(data);
+    }
+  });
 }
 
 function updateCameraFov() {
