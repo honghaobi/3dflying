@@ -181,11 +181,11 @@ function init(event) {
     createParticles();
 
     manager.onProgress = function ( item, loaded, total ) {
-
-    	console.log( item, loaded, total );
       if (loaded === total) {
-        console.log('done');
         loop();
+        setTimeout(function() {
+          $('.loading-pg').addClass('animated fadeOut');
+        },2000);
       }
     };
 

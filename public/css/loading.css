@@ -1,0 +1,9 @@
+.loading-pg {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(205,228,235,1) 65%, rgba(73,165,191,1) 100%);
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
