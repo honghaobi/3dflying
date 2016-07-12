@@ -12,9 +12,29 @@
   position: fixed;
   width: 100px;
   border-radius: 50px 50px 50px 50px;
-  border: 2px solid #ffffff;
+  border: 3px solid #ffffff;
   bottom: 50px;
   right: 50px;
+  background-color: #ffffff;
+}
+
+.loading-img-b1 {
+  position: fixed;
+  width: 200px;
+  border-radius: 100px 100px 100px 100px;
+  border: 3px solid #ffffff;
+  top: 20%;
+  left: 40%;
+  background-color: #ffffff;
+}
+
+.loading-img-b0 {
+  position: fixed;
+  width: 100px;
+  border-radius: 50px 50px 50px 50px;
+  border: 3px solid #ffffff;
+  top: 35%;
+  left: 60%;
   background-color: #ffffff;
 }
 
