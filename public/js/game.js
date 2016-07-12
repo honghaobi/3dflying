@@ -729,7 +729,7 @@ function createBalloons() {
 }
 
 function createBirds() {
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < 80; i++) {
         var bird = new Bird();
         birdsPool.push(bird);
     }
@@ -948,7 +948,6 @@ function updateHouse() {
 }
 
 function postScore() {
-  console.log('game over show score');
   var userScore = {
     distance: Math.floor(game.distance)
   }
@@ -958,10 +957,20 @@ function postScore() {
     url: '/highscore',
     data: userScore,
     success: function (data) {
-
-      console.log(data);
+      displayScore(data);
     }
   });
+}
+
+function displayScore(data) {
+  $('.players').addClass('animated fadeIn').show();
+  console.log(data);
+  for (var i = 0; i < 5; i++) {
+    $('.p' + i).html(data.players[i].name);
+    $('.s' + i).html(data.players[i].score);
+  }
+
+
 }
 
 function updateCameraFov() {

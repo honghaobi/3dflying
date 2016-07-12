@@ -57,6 +57,7 @@ app.get('/callback',
 
 
 app.get('/game', function (req, res) {
+  console.log(req.user);
   res.render('game', {
     user: req.user
   });
@@ -64,11 +65,10 @@ app.get('/game', function (req, res) {
 
 app.post('/highscore', function (req, res) {
   var user = {};
-
-  if (req.user.provider == 'facebook' || req.user.provider =='linkedin') {
+  if (req.user.provider == 'facebook') {
     user.name = req.user.displayName;
-  } else if (req.user.provider == 'github' || req.user.provider == 'google-oauth2') {
-    user.name = req.user.name;
+  } else if (req.user.provider == 'github' || req.user.provider == 'google-oauth2'  || req.user.provider =='linkedin') {
+    user.name = req.user._json.name;
   }
     user.picture = req.user.picture;
     user.score = req.body.distance;
