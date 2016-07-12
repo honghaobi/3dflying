@@ -126,6 +126,9 @@ function resetGame() {
 
 }
 
+//Initializing asset loading tracking manager
+var manager = new THREE.LoadingManager();
+
 //Game Sound Effects
 
 var gameSound = {
@@ -176,7 +179,16 @@ function init(event) {
     createSky();
     createBalloons();
     createParticles();
-    loop();
+
+    manager.onProgress = function ( item, loaded, total ) {
+
+    	console.log( item, loaded, total );
+      if (loaded === total) {
+        console.log('done');
+        loop();
+      }
+    };
+
 }
 
 //Create Screen, Mouse Events and Camera
@@ -486,7 +498,7 @@ BalloonsHolder.prototype.animateBalloons = function() {
 
 Bird = function() {
     var self = this;
-    var birdsLoader = new THREE.JSONLoader();
+    var birdsLoader = new THREE.JSONLoader(manager);
 
     var birdsArray = ["models/flamingo.js", "models/parrot.js", "models/stork.js"];
     birdsRandom = birdsArray[Math.floor(Math.random() * 3)];
@@ -695,7 +707,7 @@ var ground;
 var house;
 
 function createHouse() {
-    var loader = new THREE.ColladaLoader();
+    var loader = new THREE.ColladaLoader(manager);
     loader.load('models/up-house-with-balloons.dae', function(houseCollada) {
         house = houseCollada;
         var s = .25
