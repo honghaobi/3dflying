@@ -958,6 +958,7 @@ function postScore() {
     url: '/highscore',
     data: userScore,
     success: function (data) {
+      
       console.log(data);
     }
   });

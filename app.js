@@ -10,6 +10,10 @@ require('dotenv').load();
 
 var knex = require('./db/knex');
 
+function Players() {
+  return knex('players');
+}
+
 // Session and cookies middlewares to keep user logged in
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -59,16 +63,30 @@ app.get('/game', function (req, res) {
 });
 
 app.post('/highscore', function (req, res) {
+  var user = {};
+
   if (req.user.provider == 'facebook' || req.user.provider =='linkedin') {
-    console.log(req.user.displayName);
+    user.name = req.user.displayName;
   } else if (req.user.provider == 'github' || req.user.provider == 'google-oauth2') {
-    console.log(req.user.name);
+    user.name = req.user.name;
   }
+    user.picture = req.user.picture;
+    user.score = req.body.distance;
 
-  console.log(req.user.picture);
-  console.log(req.body.distance);
+  Players().insert({
+    name: user.name,
+    picture: user.picture,
+    score: user.score
+  }).then(function(){
+    Players().select().then(function(players){
 
-  res.send(200);
+        res.send({players});
+
+      });
+    }).catch(function(err){
+      console.log(err);
+    })
+
 });
 
 // catch 404 and forward to error handler
