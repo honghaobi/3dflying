@@ -78,15 +78,13 @@ app.post('/highscore', function (req, res) {
     picture: user.picture,
     score: user.score
   }).then(function(){
-    Players().select().then(function(players){
-
+    Players().select().orderBy('score', 'desc').then(function(players){
+      //Response back to front end
         res.send({players});
-
       });
     }).catch(function(err){
       console.log(err);
-    })
-
+    });
 });
 
 // catch 404 and forward to error handler

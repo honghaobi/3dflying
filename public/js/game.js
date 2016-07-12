@@ -205,7 +205,7 @@ function createScene() {
 
     //Create fog
 
-    scene.fog = new THREE.Fog(colors.lavender, 300, 1500);
+    scene.fog = new THREE.Fog(colors.lavender, 600, 1500);
 
     scene.position.x = 0;
     scene.position.y = 0;
@@ -843,7 +843,7 @@ function updateDistance() {
     var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
 
     display.levelsBar.style.width = Math.floor((game.distance/10) % 100) + '%';
-    display.levelsBarLevel.style.left = Math.floor((game.distance/10) % 100) - 2.5 + '%';
+    display.levelsBarLevel.style.left = Math.floor((game.distance/10) % 100) -0.5 + '%';
 
     if (game.distance > 1000 && game.distance < 2000) {
       display.levelsBar.style.backgroundColor = 'rgb(254, 229, 66)';
@@ -958,7 +958,7 @@ function postScore() {
     url: '/highscore',
     data: userScore,
     success: function (data) {
-      
+
       console.log(data);
     }
   });
