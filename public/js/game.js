@@ -130,20 +130,24 @@ function resetGame() {
 
 var gameSound = {
     pop: [new Audio("sound/pop1.mp3"),
-        new Audio("sound/pop2.mp3"),
-        new Audio("sound/pop3.mp3"),
-        new Audio("sound/pop4.mp3")
+          new Audio("sound/pop2.mp3"),
+          new Audio("sound/pop3.mp3"),
+          new Audio("sound/pop4.mp3")
     ],
     bird: [new Audio("sound/bird1.wav"),
-        new Audio("sound/bird2.mp3")
+           new Audio("sound/bird2.mp3"),
+           new Audio("sound/bird3.m4a"),
+           new Audio("sound/bird4.wav")
     ],
     thud: new Audio("sound/thud.mp3"),
     levelup: [new Audio("sound/cool.mp3"),
-        new Audio("sound/steered.mp3")
+              new Audio("sound/steered.mp3"),
+              new Audio("sound/adventure.m4a")
     ],
     leveldown: [new Audio("sound/jerk.mp3"),
-        new Audio("sound/watchit.mp3"),
-        new Audio("sound/losttime.mp3")
+                new Audio("sound/watchit.mp3"),
+                new Audio("sound/losttime.mp3"),
+                new Audio("sound/caw.m4a")
     ],
     sorryend: new Audio("sound/sorryend.m4a")
 }
@@ -586,12 +590,12 @@ BirdsHolder.prototype.animateBirds = function() {
             ambientLight.intensity = 1.5;
 
 
-            gameSound.bird[Math.floor(Math.random() * 2)].play();
+            gameSound.bird[Math.floor(Math.random() * 4)].play();
             gameSound.thud.play();
 
             //Every 5 birds hit play sound
             if (game.birdCrushCount % 5 === 0) {
-                gameSound.leveldown[Math.floor(Math.random() * 3)].play();
+                gameSound.leveldown[Math.floor(Math.random() * 4)].play();
             }
             game.birdCrushCount += 1;
             removeBalloons();
@@ -792,7 +796,7 @@ function loop() {
         if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate) {
             game.levelLastUpdate = Math.floor(game.distance);
             game.level++;
-            gameSound.levelup[Math.floor(Math.random() * 2)].play();
+            gameSound.levelup[Math.floor(Math.random() * 3)].play();
             game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level;
 
 
