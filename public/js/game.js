@@ -90,6 +90,7 @@ function resetGame() {
       houseSpeed: 0,
       houseCollisionDisplacementX: 0,
       houseCollisionSpeedX: 0,
+      houseRotationX: -1.6,
 
       houseCollisionDisplacementY: 0,
       houseCollisionSpeedY: 0,
@@ -809,6 +810,10 @@ function loop() {
         game.houseFallSpeed *= 1.05;
         house.scene.position.y -= game.houseFallSpeed * deltaTime;
 
+    }
+
+    if (house) {
+      house.scene.rotation.x = -1.6;
     }
 
     renderAnimatedModels();
