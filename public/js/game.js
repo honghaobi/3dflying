@@ -115,7 +115,7 @@ function resetGame() {
       birdValue: 5,
       birdsSpeed: .6,
       birdLastSpawn: 0,
-      distanceForBirdsSpawn: 40,
+      distanceForBirdsSpawn: 50,
       birdCrushCount: 0,
 
       status: "playing",
@@ -533,16 +533,15 @@ BirdsHolder.prototype.spawnBirds = function() {
             bird = new Bird();
         }
 
-        if (bird) {
-          bird.angle = -(i * 0.1);
-          bird.distance = game.landRadius + game.houseDefaultHeight + (-1 + Math.random() * 2) * (game.houseAmpHeight - 20);
-          bird.mesh.position.y = -game.landRadius + Math.sin(bird.angle) * bird.distance;
-          bird.mesh.position.x = Math.cos(bird.angle) * bird.distance;
-          bird.mesh.position.z = Math.random() * (300 - (-300)) + (-300);
+        bird.angle = -(i * 0.1);
+        bird.distance = game.landRadius + game.houseDefaultHeight + (-1 + Math.random() * 2) * (game.houseAmpHeight - 20);
+        bird.mesh.position.y = -game.landRadius + Math.sin(bird.angle) * bird.distance;
+        bird.mesh.position.x = Math.cos(bird.angle) * bird.distance;
+        bird.mesh.position.z = Math.random() * (300 - (-300)) + (-300);
 
-          this.mesh.add(bird.mesh);
-          this.birdsInUse.push(bird);
-        }
+        this.mesh.add(bird.mesh);
+        this.birdsInUse.push(bird);
+
     }
 }
 
