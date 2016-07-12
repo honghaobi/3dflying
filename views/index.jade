@@ -4,10 +4,19 @@ block content
     script(src='https://cdn.auth0.com/js/lock-9.1.min.js')
     script(type='text/javascript').
         var lock = new Auth0Lock('Tccv5ZzgEOeZyOdrg6KjsDZblvWlxtnX', 'henrybi.auth0.com');
+        
+        var callBackUrl;
+        
+        if (window.location.href == 'http://upupandaway.herokuapp.com/') {
+          callBackUrl = 'http://upupandaway.herokuapp.com/callback';
+        } else {
+          callBackUrl = 'http://localhost:3000/callback';
+        }
+        
         function signin() {
           lock.show({
             //- callbackURL: 'http://upupandaway.herokuapp.com/callback',
-            callbackURL: 'http://localhost:3000/callback',
+            callbackURL: callBackUrl,
             responseType: 'code',
             authParams: {
               scope: 'openid email'  // Learn about scopes: https://auth0.com/docs/scopes
