@@ -126,7 +126,6 @@ function resetGame() {
 
 }
 
-
 //Game Sound Effects
 
 var gameSound = {
@@ -947,8 +946,6 @@ function updateHouse() {
     game.houseSpeed = normalize(mousePos.x, -.5, .5, game.houseMinSpeed, game.houseMaxSpeed);
 
 }
-
-// console.log(Window.sessionStorage.user);
 
 function postScore() {
   console.log('game over show score');
