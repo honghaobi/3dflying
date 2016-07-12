@@ -472,15 +472,17 @@ BalloonsHolder.prototype.animateBalloons = function() {
 
         var balloonsPos = new THREE.Vector3();
 
-        balloonsPos.x = house.scene.position.x;
-        balloonsPos.y = house.scene.position.y + 80;
-        balloonsPos.z = house.scene.position.z;
+        if (house) {
+          balloonsPos.x = house.scene.position.x;
+          balloonsPos.y = house.scene.position.y + 80;
+          balloonsPos.z = house.scene.position.z;
 
-        var diffBalloonsPos = balloonsPos.clone().sub(balloon.mesh.position.clone());
-        var diffHousePos = house.scene.position.clone().sub(balloon.mesh.position.clone());
+          var diffBalloonsPos = balloonsPos.clone().sub(balloon.mesh.position.clone());
+          var diffHousePos = house.scene.position.clone().sub(balloon.mesh.position.clone());
 
-        var dh = diffHousePos.length();
-        var db = diffBalloonsPos.length();
+          var dh = diffHousePos.length();
+          var db = diffBalloonsPos.length();
+        }
 
         if (dh < game.balloonDistanceTolerance || db < game.balloonDistanceTolerance) {
             this.balloonsPool.unshift(this.balloonsInUse.splice(i, 1)[0]);
