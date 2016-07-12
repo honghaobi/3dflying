@@ -7,3 +7,27 @@
   left: 0;
   z-index: 5;
 }
+
+.doug {
+  position: fixed;
+  width: 100px;
+  border-radius: 50px 50px 50px 50px;
+  border: 2px solid #ffffff;
+  bottom: 50px;
+  right: 50px;
+  background-color: #ffffff;
+}
+
+.a1 {
+  position: fixed;
+  font-size: 50px;
+  top: 25%;
+  left: 20%;
+}
+
+.a2 {
+  position: fixed;
+  font-size: 50px;
+  top: 35%;
+  left: 20%;
+}
