@@ -185,7 +185,7 @@ function init(event) {
       if (loaded === total) {
         loop();
         setTimeout(function() {
-          $('.loading-pg').addClass('animated fadeOut');
+          $('.loading-pg').hide();
         },2000);
       }
     };
