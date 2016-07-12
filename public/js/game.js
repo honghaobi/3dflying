@@ -963,15 +963,18 @@ function postScore() {
 }
 
 function displayScore(data) {
-  $('.players').addClass('animated fadeIn').show();
-  console.log(data);
+
+  $('.players').show();
   for (var i = 0; i < 5; i++) {
     $('.p' + i).html(data.players[i].name);
     $('.s' + i).html(data.players[i].score);
   }
-
-
 }
+
+$('.players').on('click', function(event) {
+  $('.players').hide();
+  resetGame();
+});
 
 function updateCameraFov() {
 
