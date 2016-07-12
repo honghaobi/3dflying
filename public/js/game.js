@@ -525,7 +525,7 @@ BirdsHolder.prototype.spawnBirds = function() {
 
     var nBirds = game.level;
 
-    for (var i = 0; i < nBirds; i++) {
+    for (var i = 0; i <= nBirds; i++) {
         var bird;
         if (birdsPool.length) {
             bird = birdsPool.pop();

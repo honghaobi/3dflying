@@ -15,8 +15,8 @@
   color: white;
   font-size: 80px;
   font-weight: 700;
-  top: 200px;
-  right: 24%;
+  bottom: 200px;
+  right: 20%;
   z-index: 2;
 }
 
@@ -24,8 +24,8 @@
   position: fixed;
   color: white;
   font-size: 40px;
-  top: 320px;
-  right: 24%;
+  bottom: 180px;
+  right: 20%;
   z-index: 2;
   cursor: pointer;
   transition: all 1s;
