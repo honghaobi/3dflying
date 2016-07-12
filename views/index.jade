@@ -6,7 +6,7 @@ block content
         var lock = new Auth0Lock('Tccv5ZzgEOeZyOdrg6KjsDZblvWlxtnX', 'henrybi.auth0.com');
         function signin() {
         lock.show({
-        callbackURL: 'http://localhost:3000/callback'
+        callbackURL: 'https://upupandaway.herokuapp.com/callback'
         , responseType: 'code'
         , authParams: {
         scope: 'openid email'  // Learn about scopes: https://auth0.com/docs/scopes
