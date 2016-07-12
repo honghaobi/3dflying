@@ -128,6 +128,7 @@ function resetGame() {
 
 //Initializing asset loading tracking manager
 var manager = new THREE.LoadingManager();
+var manager2 = new THREE.LoadingManager();
 
 //Game Sound Effects
 
@@ -173,12 +174,12 @@ function init(event) {
     initMusic();
     createScene();
     createLights();
-    createBirds();
     createHouse();
     createGround();
     createSky();
     createBalloons();
     createParticles();
+    createBirds();
 
     manager.onProgress = function ( item, loaded, total ) {
       if (loaded === total) {
@@ -190,6 +191,7 @@ function init(event) {
     };
 
 }
+
 
 //Create Screen, Mouse Events and Camera
 
@@ -574,17 +576,18 @@ BirdsHolder.prototype.animateBirds = function() {
         //Setting the balloons position for collision detection
         var balloonsPos = new THREE.Vector3();
 
-        balloonsPos.x = house.scene.position.x;
-        balloonsPos.y = house.scene.position.y + 80;
-        balloonsPos.z = house.scene.position.z;
+        if (house) {
+          balloonsPos.x = house.scene.position.x;
+          balloonsPos.y = house.scene.position.y + 80;
+          balloonsPos.z = house.scene.position.z;
 
-        var diffBalloonsPos = balloonsPos.clone().sub(bird.mesh.position.clone());
-        var diffHousePos = house.scene.position.clone().sub(bird.mesh.position.clone());
+          var diffBalloonsPos = balloonsPos.clone().sub(bird.mesh.position.clone());
+          var diffHousePos = house.scene.position.clone().sub(bird.mesh.position.clone());
 
 
-        var dh = diffHousePos.length();
-        var db = diffBalloonsPos.length();
-
+          var dh = diffHousePos.length();
+          var db = diffBalloonsPos.length();
+        }
 
         if (dh < game.birdDistanceTolerance || db < game.birdDistanceTolerance) {
 
@@ -707,7 +710,7 @@ var ground;
 var house;
 
 function createHouse() {
-    var loader = new THREE.ColladaLoader(manager);
+    var loader = new THREE.ColladaLoader(manager2);
     loader.load('models/up-house-with-balloons.dae', function(houseCollada) {
         house = houseCollada;
         var s = .25
