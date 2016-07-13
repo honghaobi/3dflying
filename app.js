@@ -57,25 +57,26 @@ app.get('/callback',
 
 
 app.get('/game', function (req, res) {
-  console.log(req.user);
   res.render('game', {
     user: req.user
   });
 });
 
 app.post('/highscore', function (req, res) {
+
   var user = {};
+
+  user.name = "Chris Yolo";
+  user.picture = "http://www.polyvore.com/cgi/img-thing?.out=jpg&size=l&tid=12706880";
+
   if (req.user.provider == 'facebook') {
     user.name = req.user.displayName;
+    user.picture = req.user.picture;
   } else if (req.user.provider == 'github' || req.user.provider == 'google-oauth2'  || req.user.provider =='linkedin') {
     user.name = req.user._json.name;
+    user.picture = req.user.picture;
   }
 
-  if (!req.user) {
-    user.name = "Chris YoloSmith"
-  }
-  
-  user.picture = req.user.picture;
   user.score = req.body.distance;
 
   Players().insert({
