@@ -315,7 +315,7 @@ Ground = function() {
 }
 
 Mountain = function (md) {
-  var geoMountain = new THREE.TetrahedronGeometry(md.size);
+  var geoMountain = new THREE.TetrahedronGeometry(md.size, md.detail);
   var matMountain = new THREE.MeshBasicMaterial({
     color: colors.mountain,
     specular: colors.white,
@@ -838,7 +838,8 @@ function createGround() {
 
 function createMountains() {
   var md = [
-    {size:100, x:0, y:1000, z:0, xr:0, yr:0, zr:0}
+    {size:100, detail:3, x:0, y:1000, z:0, xr:0, yr:0, zr:0}
+
   ];
 
   for (var i = 0; i < 1; i++) {
