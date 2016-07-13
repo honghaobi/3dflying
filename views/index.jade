@@ -7,7 +7,7 @@ block content
         
         var callBackUrl;
         
-        if (window.location.href == 'https://upupandaway.herokuapp.com/' || window.location.href == 'http://upupandaway.herokuapp.com/') {
+        if (window.location.host == 'upupandaway.herokuapp.com') {
           callBackUrl = 'https://upupandaway.herokuapp.com/callback';
         } else {
           callBackUrl = 'http://localhost:3000/callback';
