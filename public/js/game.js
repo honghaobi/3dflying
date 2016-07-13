@@ -715,6 +715,7 @@ var ground;
 var house;
 var sun;
 var blimp;
+var propeller;
 
 function createHouse() {
     var loader = new THREE.ColladaLoader(manager2);
@@ -775,16 +776,36 @@ function createBlimp() {
 
   blimp.add(blimpBottom);
 
-
   //blimpspinner
+
+  var geomPropeller = new THREE.BoxGeometry(25, 10, 10, 1, 1, 1);
+
+  propeller = new THREE.Mesh(geomPropeller, material);
+  propeller.castShadow = true;
+  propeller.receiveShadow = true;
+
+  var geomBlade = new THREE.BoxGeometry(1,100,10,1,1,1);
+  var blade1 = new THREE.Mesh(geomBlade, material);
+  blade1.position.set(-14,0,0);
+  blade1.castShadow = true;
+  blade1.receiveShadow = true;
+
+  var blade2 = blade1.clone();
+  blade2.rotation.x = Math.PI/2;
+  blade2.castShadow = true;
+  blade2.receiveShadow = true;
+
+  propeller.add(blade1);
+  propeller.add(blade2);
+  propeller.position.y = -320;
+  propeller.position.x = -170;
+  blimp.add(propeller);
 
 
   blimp.scale.x = 3;
   blimp.position.x = 700;
   blimp.position.y = 800;
   blimp.position.z = -1000;
-
-
 
   scene.add(blimp);
 }
@@ -899,6 +920,9 @@ function loop() {
     if (house) {
       house.scene.rotation.x = -1.6;
     }
+
+    //propeller rotation
+    propeller.rotation.x +=.2 + game.houseSpeed * deltaTime*.005;
 
     renderAnimatedModels();
     updateCameraFov();
