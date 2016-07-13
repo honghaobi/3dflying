@@ -320,7 +320,7 @@ Mountain = function (md) {
     color: colors.mountain,
     specular: colors.white,
     transparent: true,
-    opacity: 1,
+    opacity: 0.6,
     shading: THREE.FlatShading
   });
 
@@ -838,11 +838,29 @@ function createGround() {
 
 function createMountains() {
   var md = [
-    {size:100, detail:3, x:0, y:1000, z:0, xr:0, yr:0, zr:0}
-
+    {size:100, detail:0, x:0, y:1000, z:100, xr:0, yr:0, zr:0},
+    {size:75, detail:1, x:0, y:-1000, z:-200, xr:0, yr:0, zr:0},
+    {size:75, detail:1, x:950, y:0, z:-350, xr:0, yr:0, zr:0},
+    {size:200, detail:0, x:-1000, y:0, z:125, xr:0, yr:0, zr:0},
+    {size:325, detail:0, x:500, y:500, z:800, xr:0, yr:0, zr:0},
+    {size:125, detail:0, x:-500, y:-500, z:750, xr:0, yr:0, zr:0},
+    {size:150, detail:1, x:500, y:-500, z:-750, xr:0, yr:0, zr:0},
+    {size:175, detail:2, x:-125, y:900, z:-150, xr:0, yr:0, zr:0},
+    {size:800, detail:1, x:100, y:75, z:-1000, xr:0, yr:0, zr:0},
+    {size:75, detail:1, x:1000, y:0, z:-75, xr:0, yr:0, zr:0},
+    {size:150, detail:2, x:-1000, y:0, z:-50, xr:0, yr:0, zr:0},
+    {size:125, detail:0, x:-750, y:-250, z:0, xr:0, yr:0, zr:0},
+    {size:75, detail:1, x:875, y:125, z:25, xr:0, yr:0, zr:0},
+    {size:100, detail:0, x:625, y:375, z:50, xr:0, yr:0, zr:0},
+    {size:75, detail:2, x:875, y:-150, z:0, xr:0, yr:0, zr:0},
+    {size:50, detail:1, x:625, y:-400, z:75, xr:0, yr:0, zr:0},
+    {size:100, detail:1, x:-775, y:175, z:25, xr:0, yr:0, zr:0},
+    {size:150, detail:0, x:-300, y:750, z:-50, xr:0, yr:0, zr:0},
+    {size:125, detail:0, x:-600, y:-525, z:100, xr:0, yr:0, zr:0},
+    {size:50, detail:3, x:-655, y:-350, z:-125, xr:0, yr:0, zr:0}
   ];
 
-  for (var i = 0; i < 1; i++) {
+  for (var i = 0; i < 20; i++) {
     new Mountain(md[i]);
   }
 
