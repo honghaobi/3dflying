@@ -31,7 +31,7 @@ var mousePos = {
     y: 0
 };
 
-var stats = new Stats();
+// var stats = new Stats();
 
 //For animation frames
 
@@ -241,7 +241,7 @@ function createScene() {
 
     //Stats tracker
 
-    container.appendChild(stats.dom);
+    // container.appendChild(stats.dom);
 
     window.addEventListener('resize', handleWindowResize, false);
 
@@ -781,7 +781,7 @@ function renderAnimatedModels() {
 function loop() {
 
     //FPS update;
-    stats.update();
+    // stats.update();
 
     //Game Logic
 
@@ -866,6 +866,14 @@ function updateDistance() {
 
     display.levelsBar.style.width = Math.floor((game.distance/10) % 100) + '%';
     display.levelsBarLevel.style.left = Math.floor((game.distance/10) % 100) -0.5 + '%';
+
+    if (Math.floor((game.distance/10) % 100) > 98) {
+      $('#levels-bar-level').addClass('noTransition');
+      $('#levels-bar ').addClass('noTransition');
+    } else if (Math.floor((game.distance/10) % 100) > 2) {
+      $('#levels-bar-level').removeClass('noTransition');
+      $('#levels-bar ').removeClass('noTransition');
+    }
 
     if (game.distance > 1000 && game.distance < 2000) {
       display.levelsBar.style.backgroundColor = 'rgb(254, 229, 66)';

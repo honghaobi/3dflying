@@ -70,8 +70,13 @@ app.post('/highscore', function (req, res) {
   } else if (req.user.provider == 'github' || req.user.provider == 'google-oauth2'  || req.user.provider =='linkedin') {
     user.name = req.user._json.name;
   }
-    user.picture = req.user.picture;
-    user.score = req.body.distance;
+
+  if (!req.user) {
+    user.name = "Chris YoloSmith"
+  }
+  
+  user.picture = req.user.picture;
+  user.score = req.body.distance;
 
   Players().insert({
     name: user.name,
