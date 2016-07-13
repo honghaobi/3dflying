@@ -876,17 +876,17 @@ function updateDistance() {
     }
 
     if (game.distance > 1000 && game.distance < 2000) {
-      display.levelsBar.style.backgroundColor = 'rgb(254, 229, 66)';
+      display.levelsBar.style.backgroundColor = 'rgb(255, 242, 156)';
     } else if (game.distance > 2000 && game.distance < 3000) {
-      display.levelsBar.style.backgroundColor = 'rgb(171, 254, 66)';
+      display.levelsBar.style.backgroundColor = 'rgb(223, 255, 184)';
     } else if (game.distance > 3000 && game.distance < 4000) {
-      display.levelsBar.style.backgroundColor = 'rgb(66, 254, 124)';
+      display.levelsBar.style.backgroundColor = 'rgb(149, 252, 181)';
     } else if (game.distance > 4000 && game.distance < 5000) {
-      display.levelsBar.style.backgroundColor = 'rgb(192, 254, 245)';
+      display.levelsBar.style.backgroundColor = 'rgb(219, 255, 250)';
     } else if (game.distance > 5000 && game.distance < 6000) {
-      display.levelsBar.style.backgroundColor = 'rgb(128, 117, 255)';
+      display.levelsBar.style.backgroundColor = 'rgb(190, 185, 249)';
     } else if (game.distance > 6000 && game.distance < 7000) {
-      display.levelsBar.style.backgroundColor = 'rgb(235, 156, 255)';
+      display.levelsBar.style.backgroundColor = 'rgb(241, 198, 251)';
     } else if (game.distance > 7000) {
       display.levelsBar.style.backgroundColor = 'rgb(255, 140, 140)';
     }
@@ -903,7 +903,9 @@ function updateBalloons() {
     display.balloonsBarBalloon.style.left = Math.floor(game.balloonCounts) - 1 + '%';
 
     if (game.balloonCounts < 30) {
-      display.balloonsBar.style.backgroundColor = 'rgb(255, 59, 59)';
+      display.balloonsBar.style.backgroundColor = 'rgb(246, 187, 240)';
+    } else {
+      display.balloonsBar.style.backgroundColor = 'rgb(176, 255, 200)';
     }
 
     if (game.balloonCounts < 1) {

@@ -11,11 +11,10 @@ body {
   margin-top: -30px;
 	position: absolute;
 	width: 100%;
-	height: 100%;
+	height: 110%;
 	overflow: hidden;
 	background: -webkit-linear-gradient(#ee7261, #eadfff);
 	background: linear-gradient(#ee7261, #eadfff);
-  transition: all 2s;
 }
 
 #balloons-bar-bg {
@@ -34,7 +33,7 @@ body {
   left: 0;
   height: 20px;
   width: 100%;
-  background-color: rgba(33, 153, 232, 1);
+  background-color: rgb(176, 255, 200);
   z-index: 2;
   transition: all 2s;
 }
@@ -55,7 +54,7 @@ body {
   left: 0;
   height: 30px;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(58, 109, 187, 0.3);
   z-index: 1;
 }
 
@@ -70,13 +69,9 @@ body {
   left: 0;
   height: 30px;
   width: 100%;
-  background-color: rgba(238, 115, 98, 1);
+  background-color: rgba(255, 174, 162, 1);
   z-index: 2;
   transition: all 2s;
-}
-
-#level-number {
-  display: inline;
 }
 
 #levels-bar-level {
@@ -118,4 +113,41 @@ body {
   -moz-transition: none !important;
   -o-transition: none !important;
   transition: none !important;
+}
+
+.player-card {
+  position: fixed;
+  width: 80px;
+  height: 140px;
+  border-radius: 60px 60px 0px 0px;
+  border: 4px solid #ffffff;
+  left: 20px;
+  bottom: 0px;
+  background-color: #3a6dbb;
+  z-index: 1;
+}
+
+#user-pic {
+  position: fixed;
+  width: 50px;
+  border-radius: 25px 25px 25px 25px;
+  border: 1px solid #ffffff;
+  left: 38px;
+  bottom: 79px;
+  background-color: #ffffff;
+  z-index: 1;
+}
+
+#level-number-all {
+  display: inline;
+  color: #ffffff;
+  position: fixed;
+  left: 36px;
+  bottom: 33px;
+  font-size: 35px;
+  font-weight: 700;
+}
+
+#level-number {
+  display: inline;
 }
