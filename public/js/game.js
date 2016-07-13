@@ -9,7 +9,8 @@ var colors = {
     avocado: 0xd4f17a,
     mint: 0x61eeaa,
     tree: 0x22a164,
-    sun: 0xffed47
+    sun: 0xffed47,
+    mountain: 0x8c5e2e
 };
 
 // ThreeJs Varibles
@@ -177,6 +178,7 @@ function init(event) {
     createLights();
     createHouse();
     createGround();
+    createMountains();
     createSky();
     createSun();
     createBlimp();
@@ -310,6 +312,24 @@ Ground = function() {
     });
     this.mesh = new THREE.Mesh(geom, mat);
     this.mesh.receiveShadow = true;
+}
+
+Mountain = function (md) {
+  var geoMountain = new THREE.TetrahedronGeometry(md.size);
+  var matMountain = new THREE.MeshBasicMaterial({
+    color: colors.mountain,
+    specular: colors.white,
+    transparent: true,
+    opacity: 1,
+    shading: THREE.FlatShading
+  });
+
+  this.mesh = new THREE.Mesh(geoMountain, matMountain);
+  this.mesh.position.set(md.x, md.y, md.z);
+  this.mesh.rotation.set(md.xr, md.yr, md.zr);
+  this.mesh.castShadow = true;
+  this.mesh.receiveShadow = true;
+  ground.mesh.add(this.mesh);
 }
 
 Sky = function() {
@@ -811,9 +831,20 @@ function createBlimp() {
 }
 
 function createGround() {
-    ground = new Ground();
-    ground.mesh.position.y = -1000;
-    scene.add(ground.mesh);
+  ground = new Ground();
+  ground.mesh.position.y = -1000;
+  scene.add(ground.mesh);
+}
+
+function createMountains() {
+  var md = [
+    {size:100, x:0, y:1000, z:0, xr:0, yr:0, zr:0}
+  ];
+
+  for (var i = 0; i < 1; i++) {
+    new Mountain(md[i]);
+  }
+
 }
 
 function createSky() {
