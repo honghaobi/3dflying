@@ -1,5 +1,6 @@
 html {
   font-family: 'Amatic SC', cursive;
+  overflow: hidden;
 }
 
 body {
@@ -8,10 +9,9 @@ body {
 }
 
 .world {
-  margin-top: -30px;
 	position: absolute;
 	width: 100%;
-	height: 110%;
+	height: 100%;
 	overflow: hidden;
 	background: -webkit-linear-gradient(#ee7261, #eadfff);
 	background: linear-gradient(#ee7261, #eadfff);

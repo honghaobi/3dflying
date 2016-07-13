@@ -9,6 +9,7 @@ var colors = {
     avocado: 0xd4f17a,
     mint: 0x61eeaa,
     tree: 0x22a164,
+    sun: 0xffed47
 };
 
 // ThreeJs Varibles
@@ -177,6 +178,8 @@ function init(event) {
     createHouse();
     createGround();
     createSky();
+    createSun();
+    createBlimp();
     createBalloons();
     createParticles();
     createBirds();
@@ -217,7 +220,7 @@ function createScene() {
 
     //Camera starting postion
 
-    camera.position.x = -350;
+    camera.position.x = -300;
     camera.position.z = 0;
     camera.position.y = 200;
 
@@ -710,6 +713,8 @@ ParticlesHolder.prototype.spawnParticles = function(pos, density, color, scale) 
 // 3D Models
 var ground;
 var house;
+var sun;
+var blimp;
 
 function createHouse() {
     var loader = new THREE.ColladaLoader(manager2);
@@ -728,6 +733,60 @@ function createHouse() {
         }
         scene.add(houseCollada.scene);
     });
+}
+
+function createSun() {
+
+  var geometry = new THREE.SphereGeometry( 200, 32, 32 );
+  var material = new THREE.MeshBasicMaterial({
+    color: colors.sun,
+    specular: colors.white,
+    transparent: true,
+    opacity: 0.8,
+    shading: THREE.FlatShading
+  });
+  sun = new THREE.Mesh( geometry, material );
+  sun.position.y = 500;
+  sun.position.z = 1200;
+
+  scene.add(sun);
+}
+
+function createBlimp() {
+
+  var geometry = new THREE.SphereGeometry( 300, 16, 8 );
+  var material = new THREE.MeshBasicMaterial({
+    color: colors.navy,
+    specular: colors.white,
+    transparent: true,
+    opacity: 1,
+    shading: THREE.FlatShading
+  });
+  var blimp = new THREE.Mesh( geometry, material );
+
+  //blimpbottom
+  var geometryBlimpBottom = new THREE.BoxGeometry(200, 100, 200);
+
+  var blimpBottom = new THREE.Mesh(geometryBlimpBottom, material);
+  blimpBottom.position.y = -300;
+  blimpBottom.position.x = -50;
+  blimpBottom.castShadow = true;
+  blimpBottom.receiveShadow = true;
+
+  blimp.add(blimpBottom);
+
+
+  //blimpspinner
+
+
+  blimp.scale.x = 3;
+  blimp.position.x = 700;
+  blimp.position.y = 800;
+  blimp.position.z = -1000;
+
+
+
+  scene.add(blimp);
 }
 
 function createGround() {
@@ -951,7 +1010,7 @@ function updateHouse() {
         ty += game.houseCollisionDisplacementY;
 
         var targetCameraZ = normalize(game.houseSpeed, game.houseMinSpeed, game.houseMaxSpeed, game.cameraNearPos, game.cameraFarPos);
-        camera.fov = normalize(mousePos.x, -1, 1, 40, 80);
+        camera.fov = normalize(mousePos.x, -1, 1, 55, 60);
 
         game.houseCollisionSpeedX += (0 - game.houseCollisionSpeedX) * deltaTime * 0.03;
         game.houseCollisionDisplacementX += (0 - game.houseCollisionDisplacementX) * deltaTime * 0.01;
@@ -1014,7 +1073,7 @@ function updateCameraFov() {
         //Camera Point to the House
         camera.lookAt(house.scene.position);
     }
-    camera.fov = normalize(mousePos.y, -1, 1, 50, 80);
+    camera.fov = normalize(mousePos.y, -1, 1, 55, 70);
     camera.updateProjectionMatrix();
 }
 
