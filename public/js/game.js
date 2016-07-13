@@ -891,7 +891,6 @@ function updateDistance() {
       display.levelsBar.style.backgroundColor = 'rgb(255, 140, 140)';
     }
 
-
 }
 
 function updateBalloons() {
@@ -995,7 +994,7 @@ function postScore() {
 }
 
 function displayScore(data) {
-
+  $('.end-img').show();
   $('.players').show();
   for (var i = 0; i < 5; i++) {
     $('.p' + i).html(data.players[i].name);
@@ -1005,6 +1004,7 @@ function displayScore(data) {
 
 $('.players').on('click', function(event) {
   $('.players').hide();
+  $('.end-img').hide();
   resetGame();
 });
 
