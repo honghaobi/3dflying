@@ -7,17 +7,17 @@ block content
         
         var callBackUrl;
         
-        if (window.location.host == 'upupandaway.herokuapp.com') {
-          callBackUrl = 'https://upupandaway.herokuapp.com/callback';
-        } else {
-          callBackUrl = 'http://localhost:3000/callback';
-        }
-        console.log(window.location.protocol);
-        
+        //- if (window.location.host == 'upupandaway.herokuapp.com') {
+        //-   callBackUrl = 'https://upupandaway.herokuapp.com/callback';
+        //- } else {
+        //-   callBackUrl = 'http://localhost:3000/callback';
+        //- }
+        //- console.log(window.location.protocol);
+        //- 
         
         function signin() {
           lock.show({
-            callbackURL: callBackUrl,
+            callbackURL: 'https://upupandaway.herokuapp.com/callback',
             responseType: 'code',
             authParams: {
               scope: 'openid email'  // Learn about scopes: https://auth0.com/docs/scopes
