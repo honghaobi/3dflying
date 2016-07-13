@@ -13,10 +13,11 @@ block content
           callBackUrl = 'http://localhost:3000/callback';
         }
         
+        callBackUrl = window.location.href + 'callback';
         
         function signin() {
           lock.show({
-            //- callbackURL: callBackUrl,
+            callbackURL: callBackUrl,
             responseType: 'code',
             authParams: {
               scope: 'openid email'  // Learn about scopes: https://auth0.com/docs/scopes
