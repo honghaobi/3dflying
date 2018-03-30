@@ -69,7 +69,7 @@ app.post('/highscore', function (req, res) {
   user.name = "Chris Yolo";
   user.picture = "http://www.polyvore.com/cgi/img-thing?.out=jpg&size=l&tid=12706880";
   user.score = req.body.distance;
-  
+
   if (req.user.provider == 'facebook') {
     user.name = req.user.displayName;
     user.picture = req.user.picture;

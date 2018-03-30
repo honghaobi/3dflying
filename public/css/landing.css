@@ -1,10 +1,8 @@
 .landing-bg {
   min-height: 100%;
   min-width: 1024px;
-
   width: 100%;
   height: auto;
-
   position: fixed;
   top: 0;
   left: 0;
@@ -17,7 +15,15 @@
   font-weight: 700;
   bottom: 200px;
   right: 20%;
+  cursor: pointer;
   z-index: 2;
+  transition: all 1s;
+}
+
+.landing-title:hover {
+  color: #fa6855;
+  font-size: 85px;
+  transition: all 1s;
 }
 
 .landing-title-small {
@@ -33,5 +39,6 @@
 
 .landing-title-small:hover {
   color: #fa6855;
+  font-size: 45px;
   transition: all 1s;
 }

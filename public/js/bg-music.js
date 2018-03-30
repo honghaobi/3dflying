@@ -1,4 +1,3 @@
-
   var context, soundSource, soundBuffer, url = 'sound/up.mp3';
 
   function initMusic() {
@@ -42,19 +41,11 @@
       soundSource.stop(context.currentTime);
   }
 
-
-
   // Events for the play/stop bottons
   // document.querySelector('.play').addEventListener('click', startSound);
   // document.querySelector('.stop').addEventListener('click', stopSound);
 
-
-
-
-
-
   // This is the code we are interested in:
-
 
   function audioGraph(audioData) {
       soundSource = context.createBufferSource();
@@ -75,7 +66,6 @@
           analyser = context.createAnalyser();
           analyser.smoothingTimeConstant = 0.75;
           analyser.fftSize = 2048;
-
 
           // Finally
           playSound(soundSource);

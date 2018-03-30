@@ -140,22 +140,22 @@ var gameSound = {
           new Audio("sound/pop3.mp3"),
           new Audio("sound/pop4.mp3")
     ],
-    bird: [new Audio("sound/bird1.wav"),
+    bird: [new Audio("sound/bird1.mp3"),
            new Audio("sound/bird2.mp3"),
-           new Audio("sound/bird3.m4a"),
-           new Audio("sound/bird4.wav")
+           new Audio("sound/bird3.mp3"),
+           new Audio("sound/bird4.mp3")
     ],
     thud: new Audio("sound/thud.mp3"),
     levelup: [new Audio("sound/cool.mp3"),
               new Audio("sound/steered.mp3"),
-              new Audio("sound/adventure.m4a")
+              new Audio("sound/adventure.mp3")
     ],
     leveldown: [new Audio("sound/jerk.mp3"),
                 new Audio("sound/watchit.mp3"),
                 new Audio("sound/losttime.mp3"),
-                new Audio("sound/caw.m4a")
+                new Audio("sound/caw.mp3")
     ],
-    sorryend: new Audio("sound/sorryend.m4a")
+    sorryend: new Audio("sound/sorryend.mp3")
 }
 
 //Initializing
@@ -308,7 +308,7 @@ Ground = function() {
         color: colors.avocado,
         transparent: true,
         opacity: 1,
-        shading: THREE.FlatShading,
+        flatShading: THREE.FlatShading,
     });
     this.mesh = new THREE.Mesh(geom, mat);
     this.mesh.receiveShadow = true;
@@ -318,10 +318,9 @@ Mountain = function (md) {
   var geoMountain = new THREE.TetrahedronGeometry(md.size, md.detail);
   var matMountain = new THREE.MeshBasicMaterial({
     color: colors.mountain,
-    specular: colors.white,
     transparent: true,
     opacity: 0.6,
-    shading: THREE.FlatShading
+    flatShading: THREE.FlatShading
   });
 
   this.mesh = new THREE.Mesh(geoMountain, matMountain);
@@ -360,7 +359,7 @@ Clouds = function() {
         color: colors.lavender,
         transparent: true,
         opacity: .8,
-        shading: THREE.FlatShading
+        flatShading: THREE.FlatShading
     });
 
     var nBlocs = 3 + Math.floor(Math.random() * 3);
@@ -390,10 +389,9 @@ Balloon = function() {
         shininess: 25,
         transparent: true,
         opacity: 0.75,
-        specular: colors.peach,
         morphTargets: true,
         morphNormals: true,
-        shading: THREE.FlatShading
+        flatShading: THREE.FlatShading
     });
 
     this.mesh = new THREE.Mesh(sphereGeometry, material);
@@ -407,10 +405,9 @@ Balloon = function() {
     var geometryBalloonBottom = new THREE.CylinderGeometry(1, 1.5, 2, 32);
     var materialBalloonBottom = new THREE.MeshPhongMaterial({
         color: balloonsColorsRandom,
-        specular: colors.white,
         transparent: true,
         opacity: 0.75,
-        shading: THREE.FlatShading
+        flatShading: THREE.FlatShading
     });
 
     var balloonBottom = new THREE.Mesh(geometryBalloonBottom, materialBalloonBottom);
@@ -424,8 +421,7 @@ Balloon = function() {
     var geometryBalloonString = new THREE.CylinderGeometry(0.05, 0.05, 20, 32);
     var materialBalloonString = new THREE.MeshPhongMaterial({
         color: colors.gray,
-        specular: colors.white,
-        shading: THREE.FlatShading
+        flatShading: THREE.FlatShading
     });
 
     var balloonString = new THREE.Mesh(geometryBalloonString, materialBalloonString);
@@ -533,12 +529,11 @@ Bird = function() {
     birdsLoader.load(birdsRandom, function(geometry) {
         var material = new THREE.MeshPhongMaterial({
             color: colors.white,
-            specular: colors.white,
             shininess: 10,
             morphTargets: true,
             morphNormals: true,
             vertexColors: THREE.FaceColors,
-            shading: THREE.FlatShading
+            flatShading: THREE.FlatShading
         });
         self.mesh = new THREE.Mesh(geometry, material);
         var s = 0.35;
@@ -654,8 +649,7 @@ Particle = function() {
     var geom = new THREE.SphereGeometry(5, 32, 32);
     var mat = new THREE.MeshPhongMaterial({
         color: colors.lavender,
-        specular: colors.white,
-        shading: THREE.FlatShading
+        flatShading: THREE.FlatShading
     });
     this.mesh = new THREE.Mesh(geom, mat);
 }
@@ -761,10 +755,9 @@ function createSun() {
   var geometry = new THREE.SphereGeometry( 200, 32, 32 );
   var material = new THREE.MeshBasicMaterial({
     color: colors.sun,
-    specular: colors.white,
     transparent: true,
     opacity: 0.8,
-    shading: THREE.FlatShading
+    flatShading: THREE.FlatShading
   });
   sun = new THREE.Mesh( geometry, material );
   sun.position.y = 500;
@@ -778,10 +771,9 @@ function createBlimp() {
   var geometry = new THREE.SphereGeometry( 300, 16, 8 );
   var material = new THREE.MeshBasicMaterial({
     color: colors.navy,
-    specular: colors.white,
     transparent: true,
     opacity: 1,
-    shading: THREE.FlatShading
+    flatShading: THREE.FlatShading
   });
   var blimp = new THREE.Mesh( geometry, material );
 
