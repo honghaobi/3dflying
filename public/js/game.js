@@ -124,13 +124,10 @@ function resetGame() {
 
   }
 
-  startBgMusic();
-
 }
 
 //Initializing asset loading tracking manager
 var manager = new THREE.LoadingManager();
-var manager2 = new THREE.LoadingManager();
 
 //Game Sound Effects
 
@@ -173,7 +170,6 @@ function init(event) {
     display.balloonsBarBalloon = document.getElementById("balloons-bar-balloon");
 
     resetGame();
-    initMusic();
     createScene();
     createLights();
     createHouse();
@@ -185,18 +181,15 @@ function init(event) {
     createBalloons();
     createParticles();
     createBirds();
+    initMusic();
+    startBgMusic();
 
     manager.onProgress = function ( item, loaded, total ) {
       if (loaded === total) {
         loop();
-        setTimeout(function() {
-          $('.loading-pg').hide();
-        },2000);
       }
     };
-
 }
-
 
 //Create Screen, Mouse Events and Camera
 
@@ -218,7 +211,6 @@ function createScene() {
         nearPlane,
         farPlane
     );
-
 
     //Camera starting postion
 
@@ -732,7 +724,7 @@ var blimp;
 var propeller;
 
 function createHouse() {
-    var loader = new THREE.ColladaLoader(manager2);
+    var loader = new THREE.ColladaLoader();
     loader.load('models/up-house-with-balloons.dae', function(houseCollada) {
         house = houseCollada;
         var s = .25
@@ -747,6 +739,7 @@ function createHouse() {
             housePartsArray[i].castShadow = true;
         }
         scene.add(houseCollada.scene);
+        $('.loading-pg').hide();
     });
 }
 
@@ -938,8 +931,6 @@ function loop() {
             game.level++;
             gameSound.levelup[Math.floor(Math.random() * 3)].play();
             game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level;
-
-
         }
 
         updateHouse();
