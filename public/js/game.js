@@ -121,9 +121,8 @@ function resetGame() {
       birdCrushCount: 0,
 
       status: "playing",
-
   }
-
+  startBgMusic();
 }
 
 //Initializing asset loading tracking manager
@@ -132,25 +131,29 @@ var manager = new THREE.LoadingManager();
 //Game Sound Effects
 
 var gameSound = {
-    pop: [new Audio("sound/pop1.mp3"),
-          new Audio("sound/pop2.mp3"),
-          new Audio("sound/pop3.mp3"),
-          new Audio("sound/pop4.mp3")
+    pop: [
+      new Audio("sound/pop1.mp3"),
+      new Audio("sound/pop2.mp3"),
+      new Audio("sound/pop3.mp3"),
+      new Audio("sound/pop4.mp3")
     ],
-    bird: [new Audio("sound/bird1.mp3"),
-           new Audio("sound/bird2.mp3"),
-           new Audio("sound/bird3.mp3"),
-           new Audio("sound/bird4.mp3")
+    bird: [
+      new Audio("sound/bird1.mp3"),
+      new Audio("sound/bird2.mp3"),
+      new Audio("sound/bird3.mp3"),
+      new Audio("sound/bird4.mp3")
     ],
     thud: new Audio("sound/thud.mp3"),
-    levelup: [new Audio("sound/cool.mp3"),
-              new Audio("sound/steered.mp3"),
-              new Audio("sound/adventure.mp3")
+    levelup: [
+      new Audio("sound/cool.mp3"),
+      new Audio("sound/steered.mp3"),
+      new Audio("sound/adventure.mp3")
     ],
-    leveldown: [new Audio("sound/jerk.mp3"),
-                new Audio("sound/watchit.mp3"),
-                new Audio("sound/losttime.mp3"),
-                new Audio("sound/caw.mp3")
+    leveldown: [
+      new Audio("sound/jerk.mp3"),
+      new Audio("sound/watchit.mp3"),
+      new Audio("sound/losttime.mp3"),
+      new Audio("sound/caw.mp3")
     ],
     sorryend: new Audio("sound/sorryend.mp3")
 }
@@ -158,7 +161,6 @@ var gameSound = {
 //Initializing
 
 function init(event) {
-
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('touchmove', handleTouchMove, false);
 
@@ -182,7 +184,6 @@ function init(event) {
     createParticles();
     createBirds();
     initMusic();
-    startBgMusic();
 
     manager.onProgress = function ( item, loaded, total ) {
       if (loaded === total) {
@@ -246,7 +247,6 @@ function createScene() {
 
 //Change background color on level change
 //Not function transition doesnt work smoothly
-
 
 // function bgChange() {
 //   container.className = 'levelOne';
@@ -436,9 +436,7 @@ BalloonsHolder = function(nBalloons) {
 BalloonsHolder.prototype.spawnBalloons = function() {
 
     var nBalloons = 1 + Math.floor(Math.random() * 10);
-
     var d = game.landRadius + game.houseDefaultHeight + (-1 + Math.random() * 2) * (game.houseAmpHeight - 20);
-
     var amplitude = 10 + Math.round(Math.random() * 10);
 
     for (var i = 0; i < nBalloons; i++) {
@@ -451,9 +449,7 @@ BalloonsHolder.prototype.spawnBalloons = function() {
 
         balloon.angle = -(i * 0.02);
         balloon.distance = d + Math.cos(i * .5) * amplitude;
-
         balloon.mesh.position.y = -game.landRadius + 10 * balloon.distance;
-
         balloon.mesh.position.x = Math.cos(balloon.angle) * balloon.distance;
         balloon.mesh.position.z = Math.random() * (300 - (-300)) + (-300);
 
@@ -475,10 +471,7 @@ BalloonsHolder.prototype.animateBalloons = function() {
         }
 
         // balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle)*balloon.distance;
-
         balloon.mesh.position.y = -game.landRadius + Math.sin(balloon.angle) * balloon.distance;
-
-
         balloon.mesh.position.x = Math.cos(balloon.angle) * balloon.distance;
 
         var balloonsPos = new THREE.Vector3();
@@ -498,7 +491,6 @@ BalloonsHolder.prototype.animateBalloons = function() {
         if (dh < game.balloonDistanceTolerance || db < game.balloonDistanceTolerance) {
             this.balloonsPool.unshift(this.balloonsInUse.splice(i, 1)[0]);
             this.mesh.remove(balloon.mesh);
-
             gameSound.pop[Math.floor(Math.random() * 4)].play();
             addBalloons();
 
@@ -740,6 +732,7 @@ function createHouse() {
         }
         scene.add(houseCollada.scene);
         $('.loading-pg').hide();
+        gameSound.levelup[2].play();
     });
 }
 
@@ -915,17 +908,14 @@ function loop() {
             game.balloonLastSpawn = Math.floor(game.distance);
             balloonsHolder.spawnBalloons();
         }
-
         if (Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate) {
             game.speedLastUpdate = Math.floor(game.distance);
             game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
         }
-
         if (Math.floor(game.distance) % game.distanceForBirdsSpawn == 0 && Math.floor(game.distance) > game.birdLastSpawn) {
             game.birdLastSpawn = Math.floor(game.distance);
             birdsHolder.spawnBirds();
         }
-
         if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate) {
             game.levelLastUpdate = Math.floor(game.distance);
             game.level++;
@@ -970,6 +960,7 @@ function loop() {
 }
 
 function updateDistance() {
+  var levelBar = display.levelsBar.style;
     game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
 
     // Track Distance
@@ -980,7 +971,7 @@ function updateDistance() {
 
     var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
 
-    display.levelsBar.style.width = Math.floor((game.distance/10) % 100) + '%';
+    levelBar.width = Math.floor((game.distance/10) % 100) + '%';
     display.levelsBarLevel.style.left = Math.floor((game.distance/10) % 100) -0.5 + '%';
 
     if (Math.floor((game.distance/10) % 100) > 98) {
@@ -992,19 +983,19 @@ function updateDistance() {
     }
 
     if (game.distance > 1000 && game.distance < 2000) {
-      display.levelsBar.style.backgroundColor = 'rgb(255, 242, 156)';
+      levelBar.backgroundColor = 'rgb(255, 242, 156)';
     } else if (game.distance > 2000 && game.distance < 3000) {
-      display.levelsBar.style.backgroundColor = 'rgb(223, 255, 184)';
+      levelBar.backgroundColor = 'rgb(223, 255, 184)';
     } else if (game.distance > 3000 && game.distance < 4000) {
-      display.levelsBar.style.backgroundColor = 'rgb(149, 252, 181)';
+      levelBar.backgroundColor = 'rgb(149, 252, 181)';
     } else if (game.distance > 4000 && game.distance < 5000) {
-      display.levelsBar.style.backgroundColor = 'rgb(219, 255, 250)';
+      levelBar.backgroundColor = 'rgb(219, 255, 250)';
     } else if (game.distance > 5000 && game.distance < 6000) {
-      display.levelsBar.style.backgroundColor = 'rgb(190, 185, 249)';
+      levelBar.backgroundColor = 'rgb(190, 185, 249)';
     } else if (game.distance > 6000 && game.distance < 7000) {
-      display.levelsBar.style.backgroundColor = 'rgb(241, 198, 251)';
+      levelBar.backgroundColor = 'rgb(241, 198, 251)';
     } else if (game.distance > 7000) {
-      display.levelsBar.style.backgroundColor = 'rgb(255, 140, 140)';
+      levelBar.backgroundColor = 'rgb(255, 140, 140)';
     }
 
 }
@@ -1044,7 +1035,6 @@ function removeBalloons() {
 function updateHouse() {
 
     //Cursor moving the house direction
-
     var ty = normalize(mousePos.y, -.75, .75, -100, 100);
     var tx = normalize(mousePos.x, -.75, .75, -100, 100);
     var tz = 0;
@@ -1089,7 +1079,6 @@ function updateHouse() {
         houseRot.z = -(tx - housePos.x) * xRotSpeed;
 
     }
-
     game.houseSpeed = normalize(mousePos.x, -.5, .5, game.houseMinSpeed, game.houseMaxSpeed);
 
 }

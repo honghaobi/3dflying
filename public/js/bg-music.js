@@ -23,9 +23,7 @@
           var audioData = request.response;
 
           audioGraph(audioData);
-
       };
-
       request.send();
   }
 
