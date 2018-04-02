@@ -65,7 +65,6 @@ app.get('/game', function (req, res) {
 app.post('/highscore', function (req, res) {
 
   var user = {};
-
   user.name = "Chris Yolo";
   user.picture = "http://www.polyvore.com/cgi/img-thing?.out=jpg&size=l&tid=12706880";
   user.score = req.body.distance;

@@ -4,12 +4,14 @@ block content
     script(src='https://cdn.auth0.com/js/lock-9.1.min.js')
     script(type='text/javascript').
         var lock = new Auth0Lock('Tccv5ZzgEOeZyOdrg6KjsDZblvWlxtnX', 'henrybi.auth0.com');
-        var callBackUrl;
+        var callBackUrl, byPassUrl;
         if (window.location.host == 'upupandaway.herokuapp.com') {
           callBackUrl = window.location.protocol + '//upupandaway.herokuapp.com/callback';
+          byPassUrl = window.location.protocol + '//upupandaway.herokuapp.com/game';
         } else {
           callBackUrl = 'http://localhost:3000/callback';
-        }        
+          byPassUrl = 'http://localhost:3000/game';
+        }
         
         function signin() {
           lock.show({
@@ -19,8 +21,13 @@ block content
               scope: 'openid email'  // Learn about scopes: https://auth0.com/docs/scopes
             }
           });
+          //- window.location.href = "https://henrybi.auth0.com/login?client=Tccv5ZzgEOeZyOdrg6KjsDZblvWlxtnX"
+        }
+        
+        function byPassAuth() {
+          window.location.href = byPassUrl;
         }
 
-    img.landing-bg(src='img/bg1.jpg', alt='bg')
+    img.landing-bg(onclick='window.byPassAuth();' src='img/bg1.jpg', alt='bg')
     h1.landing-title(onclick='window.signin();') UP UP & AWAY!!!
     h2.landing-title-small(onclick='window.signin();') lets go on an adventure...
